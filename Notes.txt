@@ -1,0 +1,9 @@
+Ploca ur accesstoken ur urlen nör man authentikerat.
+
+kolla i functionen getAccessTokenUrl i exemplt.
+
+return utils.parseQueryString(window,location,hash).access_token;
+
+kolla om vi har accesstoken i ngOnInit eller i construktorn i auth service
+
+gör auth till en service!!

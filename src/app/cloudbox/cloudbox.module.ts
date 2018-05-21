@@ -10,7 +10,7 @@ import { StarredComponent } from './starred/starred.component';
   imports: [
     CommonModule
   ],
-  exports: [MainComponent],
+  exports: [MainComponent, AuthComponent],
   declarations: [AuthComponent, MainComponent, SearchComponent, DownloadComponent, StarredComponent]
 })
 export class CloudboxModule { }
