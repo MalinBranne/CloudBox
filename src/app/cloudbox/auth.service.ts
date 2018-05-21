@@ -57,13 +57,22 @@ export class AuthService {
 
       // Set the login anchors href using dbx.getAuthenticationUrl()
       var dbx = new Dropbox({ clientId: this.CLIENT_ID, accessToken: this.USER_ID });
+      var authUrl = dbx.getAuthenticationUrl('http://localhost:4200/auth')
       dbx.filesListFolder({ path: '' })
         .then(response => {
           console.log(response.entries);
+          console.log(authUrl);
+          //window.location.href = authUrl;
+          this.USER_ID = this.getAccessTokenFromUrl();
         }
         )
 
-      // document.getElementById('authlink').href = authUrl;
+
     }
   }
+
+  logout() {
+
+  }
+
 }
