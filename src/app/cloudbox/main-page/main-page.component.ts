@@ -1,5 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'main-page',
@@ -10,10 +9,6 @@ export class MainPageComponent  {
 
   constructor() { }
 
-  @Output() logoutCallback = new EventEmitter();
-
-  logout(){
-    this.logoutCallback.emit();
-  }
+  ngOnInit(){}
 
 }

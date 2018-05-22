@@ -1,3 +1,9 @@
-<p>
-  main works!
-</p>
+<button>Upload</button>
+<ul class="file-list">
+  <li 
+    *ngFor="let file of fileList"
+    (click)="fileAction($event)"
+  >
+    {{ file.name }}
+  </li>
+</ul>

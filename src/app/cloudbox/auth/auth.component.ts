@@ -16,9 +16,4 @@ export class AuthComponent implements OnInit {
     this.authenticated = this.authService.isAuthenticated();
   }
 
-  logout(){
-    this.authService.logout();
-    window.location.href = "http://localhost:4200";
-  }
-
 }
