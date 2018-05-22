@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-starred',
+  selector: 'starred',
   templateUrl: './starred.component.html',
   styleUrls: ['./starred.component.css']
 })

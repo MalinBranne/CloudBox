@@ -1,3 +1,2 @@
-<p>auth</p>
-<a href="https://www.dropbox.com/oauth2/authorize?response_type=token&client_id=nu8teo9p5a3op4l&redirect_uri=http://localhost:4200/auth">Log in with Dropbox</a>
-<!-- <button (click)="login()"></button> -->
+<login-page *ngIf="!authenticated"></login-page>
+<main-page *ngIf="authenticated" (logoutCallback)="logout()"></main-page>

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import Utils from './utils'
-// import { Dropbox } from 'Dropbox';
 let Dropbox = require('dropbox').Dropbox;
 
 @Injectable()
@@ -8,7 +7,7 @@ export class AuthService {
 
   constructor() { }
   CLIENT_ID = 'nu8teo9p5a3op4l'; // APP_ID
-  USER_ID = 'Uuyc1vyWkaAAAAAAAAAAB_B40vIY09xiadCd3X2rmcggUjvYj4PU2Qvilkxd6pEd';
+  USER_ID: string;
 
   // Parses the url and gets the access token if it is in the urls hash
   getAccessTokenFromUrl() {
@@ -19,22 +18,16 @@ export class AuthService {
   // If the user was just redirected from authenticating, the urls hash will
   // contain the access token.
   isAuthenticated() {
-    return !!this.getAccessTokenFromUrl();
+    if(localStorage.getItem("accessToken")){
+      return true;
+    }
+    else if(this.getAccessTokenFromUrl()){
+      localStorage.setItem("accessToken", this.getAccessTokenFromUrl());
+      return true;
+    }
+
+    return false;
   }
-
-  // Render a list of items to #files
-  renderItems(items) {
-    var filesContainer = document.getElementById('files');
-    items.forEach(function (item) {
-      var li = document.createElement('li');
-      li.innerHTML = item.name;
-      filesContainer.appendChild(li);
-    });
-  }
-
-  // This example keeps both the authenticate and non-authenticated setions
-  // in the DOM and uses this function to show/hide the correct section.
-
 
   auth() {
 
@@ -72,7 +65,8 @@ export class AuthService {
   }
 
   logout() {
-
+    localStorage.removeItem("accessToken");
+    window.location.href = "http://localhost:4200";
   }
 
 }

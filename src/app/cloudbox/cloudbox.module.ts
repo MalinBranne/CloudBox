@@ -5,12 +5,14 @@ import { MainComponent } from './main/main.component';
 import { SearchComponent } from './search/search.component';
 import { DownloadComponent } from './download/download.component';
 import { StarredComponent } from './starred/starred.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+import { MainPageComponent } from './main-page/main-page.component';
 
 @NgModule({
   imports: [
     CommonModule
   ],
   exports: [MainComponent, AuthComponent],
-  declarations: [AuthComponent, MainComponent, SearchComponent, DownloadComponent, StarredComponent]
+  declarations: [AuthComponent, MainComponent, SearchComponent, DownloadComponent, StarredComponent, LoginPageComponent, MainPageComponent]
 })
 export class CloudboxModule { }
