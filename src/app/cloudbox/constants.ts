@@ -11,3 +11,10 @@ export interface IFile {
     size?: number;
     starred: boolean;
 }
+
+export interface FileState {
+    paths: {
+        [path: string]: IFile[]
+    }
+    currentPath: string
+}

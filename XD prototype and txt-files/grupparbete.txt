@@ -1,23 +1,23 @@
 steg 1. 
-Lägg koden för autenticering i en service
+Lï¿½gg koden fï¿½r autenticering i en service
 
-*Läs på javaScript webtokens*
+*Lï¿½s pï¿½ javaScript webtokens*
 
 
-1. XD
-2. authenticering
-3. localstorage
+*. XD
+*. authenticering
+*. localstorage
 4. Mainarea med mappar osv (api)
 5. starred (push to starred array)
-6. om starred item förvsinner från starred lista på dropbox så försviner den även hos oss (prenumeration på starred?)
-7. ikoner för varje filtyp, implementeras med switch sats. thumbnail för bild-fil
+6. om starred item fï¿½rvsinner frï¿½n starred lista pï¿½ dropbox sï¿½ fï¿½rsviner den ï¿½ven hos oss (prenumeration pï¿½ starred?)
+7. ikoner fï¿½r varje filtyp, implementeras med switch sats. thumbnail fï¿½r bild-fil
 8. download file
 9. upload
 10. back to parent folder
 11. breadcrumbs
-12. dold div som visar preview när man klickar på en fil
+12. dold div som visar preview nï¿½r man klickar pï¿½ en fil
 13. search
-14. sessionstorage för att komma ihåg senaste sökresultat
+14. sessionstorage fï¿½r att komma ihï¿½g senaste sï¿½kresultat
 15. subscribe to dropbox changes - webhooks and certain Firebase features - se projektbeskrivning
 16. deploy
 

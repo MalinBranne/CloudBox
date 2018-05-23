@@ -9,14 +9,16 @@ import { IFile, FileType } from '../constants';
 })
 export class MainComponent implements OnInit {
 
-  subscripton;
+  subscription;
   fileList: IFile[];
 
   constructor(private fileService: FileService) { }
 
   ngOnInit() {
-    this.subscripton = this.fileService.getFiles()
-      .subscribe(files => this.fileList = files);
+    this.subscription = this.fileService.getFiles()
+      .subscribe(fileState => {
+        this.fileList = fileState.paths[fileState.currentPath];
+      });
     this.fileService.fetchFiles();
   }
 

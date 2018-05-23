@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { IFile, FileType } from './constants';
+import { IFile, FileType, FileState } from './constants';
 
 let Dropbox = require('dropbox').Dropbox;
 import 'rxjs/add/operator/map';
@@ -10,12 +10,15 @@ import { Observable } from 'rxjs/Observable';
 @Injectable()
 export class FileService {
 
-  fileState: IFile[];
+  fileState: FileState = {
+    paths: {},
+    currentPath: ""
+  };
   subject = new BehaviorSubject(this.fileState);
 
   constructor(private authService: AuthService) { }
 
-  getFiles(): Observable<IFile[]>{
+  getFiles(): Observable<FileState>{
       return this.subject.asObservable();
   }
 
@@ -26,15 +29,18 @@ export class FileService {
       .then(response => response.entries)
       .then(files => {
         console.log(files);
-        this.fileState = files.map(file => ({
+        this.fileState.currentPath = path;
+        this.fileState.paths[path] = files.map(file => ({
             id: file.id,
             fileType: FileType[file[".tag"] as FileType],
             name: file.name,
             path: file.path_display,
-            modified: "sdf",
-            size: 2,
-            starred: true
-        }))
+            modified: file.client_modified,
+            size: file.size,
+            starred: false
+          }
+        ))
+        console.log(this.fileState);
         this.updateSubscribers();
       });
 
