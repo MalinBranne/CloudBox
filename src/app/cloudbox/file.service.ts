@@ -23,27 +23,32 @@ export class FileService {
   }
 
   fetchFiles(path = ""){
-    // Set the login anchors href using dbx.getAuthenticationUrl()
-    var dbx = new Dropbox({ clientId: this.authService.CLIENT_ID, accessToken: this.authService.USER_ID });
-    dbx.filesListFolder({ path })
-      .then(response => response.entries)
-      .then(files => {
-        console.log(files);
-        this.fileState.currentPath = path;
-        this.fileState.paths[path] = files.map(file => ({
-            id: file.id,
-            fileType: FileType[file[".tag"] as FileType],
-            name: file.name,
-            path: file.path_display,
-            modified: file.client_modified,
-            size: file.size,
-            starred: false
-          }
-        ))
-        console.log(this.fileState);
-        this.updateSubscribers();
-      });
-
+    if(this.fileState.paths[path]){
+      this.fileState.currentPath = path;
+      this.updateSubscribers();
+    }
+    else{
+      // Set the login anchors href using dbx.getAuthenticationUrl()
+      var dbx = new Dropbox({ clientId: this.authService.CLIENT_ID, accessToken: this.authService.USER_ID });
+      dbx.filesListFolder({ path })
+        .then(response => response.entries)
+        .then(files => {
+          console.log(files);
+          this.fileState.currentPath = path;
+          this.fileState.paths[path] = files.map(file => ({
+              id: file.id,
+              fileType: FileType[file[".tag"] as FileType],
+              name: file.name,
+              path: file.path_display,
+              modified: file.client_modified,
+              size: file.size,
+              starred: false
+            }
+          ))
+          console.log(this.fileState);
+          this.updateSubscribers();
+        });
+    }
   }
 
   uploadFile(){

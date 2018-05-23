@@ -1,11 +1,17 @@
 <button>Upload</button>
 <table class="file-list">
-  <tr 
-    *ngFor="let file of fileList"
-    (click)="fileAction($event)"
-  >
-    <td>{{ file.name }}</td>
+  <tr *ngFor="let file of fileList" [id]="file.id">
+    <td (click)="fileAction($event)">{{ file.name }}</td>
     <td>{{ file.modified }}</td>
     <td>{{ file.size }}</td>
+    <td>
+      <span 
+        [id]="file.id"
+        class="fa-star"
+        [class.fas]="file.starred"
+        [class.far]="!file.starred"
+        (click)="toggleStar($event)"
+      ></span>
+    </td>
   </tr>
 </table>

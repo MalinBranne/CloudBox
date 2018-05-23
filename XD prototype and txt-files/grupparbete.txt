@@ -7,17 +7,17 @@ L�gg koden f�r autenticering i en service
 *. XD
 *. authenticering
 *. localstorage
-4. Mainarea med mappar osv (api)
+*. Mainarea med mappar osv (api)
 5. starred (push to starred array)
-6. om starred item f�rvsinner fr�n starred lista p� dropbox s� f�rsviner den �ven hos oss (prenumeration p� starred?)
 7. ikoner f�r varje filtyp, implementeras med switch sats. thumbnail f�r bild-fil
 8. download file
 9. upload
-10. back to parent folder
-11. breadcrumbs
+*. back to parent folder
+*. breadcrumbs
 12. dold div som visar preview n�r man klickar p� en fil
 13. search
 14. sessionstorage f�r att komma ih�g senaste s�kresultat
+6. om starred item f�rvsinner fr�n starred lista p� dropbox s� f�rsviner den �ven hos oss (prenumeration p� starred?)
 15. subscribe to dropbox changes - webhooks and certain Firebase features - se projektbeskrivning
 16. deploy
 

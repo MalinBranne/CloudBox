@@ -29,7 +29,11 @@ export class MainComponent implements OnInit {
     if(file.fileType === FileType.folder){
       this.fileService.fetchFiles(file.path);
     }
-    
+  }
+
+  toggleStar(event){
+    let currentFile = this.fileList.find(file => file.id === event.target.id);
+    currentFile.starred = !currentFile.starred;
   }
 
 }
