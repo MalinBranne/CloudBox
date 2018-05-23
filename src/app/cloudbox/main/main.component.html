@@ -1,19 +1,23 @@
 <button>Upload</button>
 <table class="file-list">
-  <tr *ngFor="let file of fileList" [id]="file.id">
-    <td (click)="fileAction($event)">{{ file.name }}</td>
-    <td>{{ file.modified }}</td>
-    <td>{{ file.size }}</td>
-    <td>
-      <span 
-        class="fa-star"
-        [class.fas]="file.starred"
-        [class.far]="!file.starred"
-        (click)="toggleStar($event)"
-      ></span>
-    </td>
-    <td>
-      <a *ngIf="file.fileType === FileType.file"  (click)="downloadFile($event)" >Download</a>
-    </td>
-  </tr>
+  <tbody>
+    <tr *ngFor="let file of fileList" [id]="file.id">
+      <td class="file-icon" (click)="fileAction($event)"><img [src]="file.iconPath" alt="file.iconPath" /></td>
+      <td class="file-name" (click)="fileAction($event)">{{ file.name }}</td>
+      <td class="file-modified" (click)="fileAction($event)">{{ file.modified }}</td>
+      <td class="file-size" (click)="fileAction($event)">{{ file.size }}</td>
+      <td class="file-starred">
+        <span 
+          class="fa-star"
+          [class.fas]="file.starred"
+          [class.far]="!file.starred"
+          (click)="toggleStar($event)"
+        ></span>
+      </td>
+      <td class="file-download">
+        <button *ngIf="file.fileType === FileType.file"  (click)="downloadFile($event)" >Download</button>
+      </td>
+    </tr>
+  </tbody>
+ 
 </table>

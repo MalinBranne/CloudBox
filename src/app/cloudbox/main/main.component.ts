@@ -24,9 +24,8 @@ export class MainComponent implements OnInit {
   }
 
   fileAction(event){
-    let fileName = event.target.innerText;
-    let file = this.fileList.find(file => fileName === file.name);
-    console.log(file);
+    let fileId = event.path[1].id;
+    let file = this.fileService.getFileFromId(fileId);
     if(file.fileType === FileType.folder){
       this.fileService.fetchFiles(file.path);
     }

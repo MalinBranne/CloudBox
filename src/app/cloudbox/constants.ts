@@ -10,6 +10,7 @@ export interface IFile {
     modified?: string;
     size?: number;
     starred: boolean;
+    iconPath: string;
 }
 
 export interface FileState {

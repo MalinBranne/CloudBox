@@ -42,22 +42,55 @@ export class FileService {
       this.dbx.filesListFolder({ path })
         .then(response => response.entries)
         .then(files => {
-          console.log(files);
           this.fileState.currentPath = path;
-          this.fileState.paths[path] = files.map(file => ({
+          this.fileState.paths[path] = files.map(file => {
+            let fileType: string = file[".tag"]; // File or Folder
+            return ({
               id: file.id,
-              fileType: FileType[file[".tag"] as FileType],
+              fileType: FileType[fileType],
               name: file.name,
               path: file.path_display,
               modified: file.client_modified,
               size: file.size,
-              starred: this.starredFiles.find(id => file.id === id)
-            }
-          ))
+              starred: this.starredFiles.find(id => file.id === id) ? true : false,
+              iconPath: this.getIconPath(file.name, fileType)
+            });
+          });
           console.log(this.fileState);
           this.updateSubscribers();
         });
     }
+  }
+
+  getIconPath(fileName: string, fileType: string){
+    let iconPath = "assets/file-icons/32px/";
+
+    // Check if folder
+    if(FileType[fileType] === FileType["folder"]){
+      iconPath += "folder";
+    }
+    else{
+      // Get file extension
+      let pos = fileName.lastIndexOf(".");
+      if(fileName === "" || pos < 1){
+        iconPath += "_blank";
+      }
+      else {
+        let extension = fileName.slice(pos + 1);
+        extension.toLowerCase();
+        let availableExtensions = "aac|ai|aiff|avi|bmp|c|cpp|css|csv|dat|dmg|doc|dotx|dwg|dxf|eps|exe|flv|gif|h|hpp|html|ics|iso|java|jpg|js|key|less|mid|mp3|mp4|mpg|odf|ods|odt|otp|ots|ott|pdf|php|png|ppt|psd|py|qt|rar|rb|rtf|sass|scss|sql|tga|tgz|tiff|txt|wav|xls|xlsx|xml|yml|zip";
+        if(availableExtensions.includes(extension)){
+          iconPath += extension;
+        }
+        else {
+          iconPath += "_blank";
+        }
+      }
+      
+    }
+    
+    iconPath += ".png";
+    return iconPath;
   }
 
   uploadFile(){
@@ -93,12 +126,12 @@ export class FileService {
 
     if (currentFile.starred){
       this.starredFiles.push(fileId);
-    } else {
+    } 
+    else {
       let index = this.starredFiles.indexOf(fileId);
       this.starredFiles.splice(index,1);
     }
     localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
-    console.log(localStorage.getItem("starredFiles" + this.authService.USER_ID));
   }
 
   updateSubscribers(){
