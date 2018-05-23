@@ -11,6 +11,7 @@ export class MainComponent implements OnInit {
 
   subscription;
   fileList: IFile[];
+  FileType = FileType;
 
   constructor(private fileService: FileService) { }
 
@@ -32,8 +33,12 @@ export class MainComponent implements OnInit {
   }
 
   toggleStar(event){
-    let currentFile = this.fileList.find(file => file.id === event.target.id);
-    currentFile.starred = !currentFile.starred;
+    this.fileService.toggleStar(event.path[2].id);
+  }
+
+  downloadFile(event) {
+    let id = event.path[2].id;
+    this.fileService.downloadFile(id);
   }
 
 }

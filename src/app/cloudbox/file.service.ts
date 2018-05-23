@@ -12,11 +12,21 @@ export class FileService {
 
   fileState: FileState = {
     paths: {},
-    currentPath: ""
+    currentPath: "",
+    
   };
   subject = new BehaviorSubject(this.fileState);
 
-  constructor(private authService: AuthService) { }
+  starredFiles = [];
+
+  dbx = new Dropbox({ clientId: this.authService.CLIENT_ID, accessToken: this.authService.USER_ID });
+
+  constructor(private authService: AuthService) { 
+    if(!localStorage.getItem("starredFiles" + this.authService.USER_ID)){
+      localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
+    }
+    this.starredFiles = JSON.parse(localStorage.getItem("starredFiles" + this.authService.USER_ID));
+  }
 
   getFiles(): Observable<FileState>{
       return this.subject.asObservable();
@@ -29,8 +39,7 @@ export class FileService {
     }
     else{
       // Set the login anchors href using dbx.getAuthenticationUrl()
-      var dbx = new Dropbox({ clientId: this.authService.CLIENT_ID, accessToken: this.authService.USER_ID });
-      dbx.filesListFolder({ path })
+      this.dbx.filesListFolder({ path })
         .then(response => response.entries)
         .then(files => {
           console.log(files);
@@ -42,7 +51,7 @@ export class FileService {
               path: file.path_display,
               modified: file.client_modified,
               size: file.size,
-              starred: false
+              starred: this.starredFiles.find(id => file.id === id)
             }
           ))
           console.log(this.fileState);
@@ -54,9 +63,42 @@ export class FileService {
   uploadFile(){
 
   }
+ 
+  downloadFile(id: string){
+    let currentFile = this.getFileFromId(id);
+    this.dbx.filesGetTemporaryLink({path: currentFile["path"]})
+    .then(
+      response => response.link)
+      .then(link => {
+        console.log(link);
+        const a = document.createElement('a');
+        a.setAttribute('href', link);
+        a.setAttribute('download', currentFile.name);
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      })
+  }
 
-  downloadFile(){
-    
+  getFileFromId(id){
+    let currentFile = this.fileState.paths[this.fileState.currentPath]
+      .find(file => file.id === id);
+    return currentFile;
+  }
+
+  toggleStar(fileId){
+    let currentFile = this.getFileFromId(fileId);
+    currentFile.starred = !currentFile.starred;
+
+    if (currentFile.starred){
+      this.starredFiles.push(fileId);
+    } else {
+      let index = this.starredFiles.indexOf(fileId);
+      this.starredFiles.splice(index,1);
+    }
+    localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
+    console.log(localStorage.getItem("starredFiles" + this.authService.USER_ID));
   }
 
   updateSubscribers(){

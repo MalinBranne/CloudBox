@@ -6,12 +6,14 @@
     <td>{{ file.size }}</td>
     <td>
       <span 
-        [id]="file.id"
         class="fa-star"
         [class.fas]="file.starred"
         [class.far]="!file.starred"
         (click)="toggleStar($event)"
       ></span>
+    </td>
+    <td>
+      <a *ngIf="file.fileType === FileType.file"  (click)="downloadFile($event)" >Download</a>
     </td>
   </tr>
 </table>
