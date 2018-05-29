@@ -52,7 +52,7 @@ export class FileService {
               path: file.path_display,
               modified: file.client_modified,
               size: file.size,
-              starred: this.starredFiles.find(id => file.id === id) ? true : false,
+              starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
               iconPath: this.getIconPath(file.name, fileType)
             });
           });
@@ -119,7 +119,7 @@ export class FileService {
             path: file.path_display,
             modified: file.client_modified,
             size: file.size,
-            starred: this.starredFiles.find(id => file.id === id) ? true : false,
+            starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
             iconPath: this.getIconPath(file.name, "file")
           };
 
@@ -176,11 +176,11 @@ export class FileService {
     currentFile.starred = !currentFile.starred;
 
     if (currentFile.starred){
-      this.starredFiles.push(fileId);
+      this.starredFiles.push(currentFile);
     } 
     else {
-      let index = this.starredFiles.indexOf(fileId);
-      this.starredFiles.splice(index,1);
+      let index = this.starredFiles.findIndex(file => file.id === fileId);
+      this.starredFiles.splice(index, 1); // tar bort starredFiles första state som är en tom lista
     }
     localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
   }
