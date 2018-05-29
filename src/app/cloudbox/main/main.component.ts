@@ -18,7 +18,10 @@ export class MainComponent implements OnInit {
   ngOnInit() {
     this.subscription = this.fileService.getFiles()
       .subscribe(fileState => {
+        //här ska vi lägga in felhantering
+        // if(det vi får tillbaka är en lista gör detta:)
         this.fileList = fileState.paths[fileState.currentPath];
+        //Else: gör detta (error)
       });
     this.fileService.fetchFiles();
   }
@@ -38,6 +41,10 @@ export class MainComponent implements OnInit {
   downloadFile(event) {
     let id = event.path[2].id;
     this.fileService.downloadFile(id);
+  }
+
+  handleFileUpload(files: FileList){
+    this.fileService.uploadFile(files.item(0));
   }
 
 }

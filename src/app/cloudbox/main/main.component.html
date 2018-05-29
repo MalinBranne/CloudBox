@@ -1,4 +1,8 @@
-<button>Upload</button>
+<input 
+  type="file" 
+  id="fileUpload"
+  (change)="handleFileUpload($event.target.files)"   
+/>
 <table class="file-list">
   <tbody>
     <tr *ngFor="let file of fileList" [id]="file.id">

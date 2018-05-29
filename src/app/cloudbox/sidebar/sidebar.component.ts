@@ -13,9 +13,4 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
   }
 
-  logout(){
-    this.authService.logout();
-    window.location.href = "http://localhost:4200";
-  }
-
 }

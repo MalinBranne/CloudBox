@@ -19,7 +19,7 @@ export class FileService {
 
   starredFiles = [];
 
-  dbx = new Dropbox({ clientId: this.authService.CLIENT_ID, accessToken: this.authService.USER_ID });
+  dbx = new Dropbox({ clientId: this.authService.CLIENT_ID, accessToken: this.authService.ACCESS_TOKEN });
 
   constructor(private authService: AuthService) { 
     if(!localStorage.getItem("starredFiles" + this.authService.USER_ID)){
@@ -93,8 +93,59 @@ export class FileService {
     return iconPath;
   }
 
-  uploadFile(){
+  uploadFile(file: File){
+    console.log(file);
 
+    const reader = new FileReader();
+    reader.onload = () => {
+      const data = reader.result;
+      const dataArray = new Int8Array(data);
+      console.log(dataArray);
+
+      this.dbx.filesUpload({
+        contents: dataArray,
+        path: this.fileState.currentPath + "/" + file.name,
+        mode: {
+          '.tag': 'add'
+        },
+        autorename: true,
+        mute: false
+      })
+        .then(file => {
+          const newFile = {
+            id: file.id,
+            fileType: FileType["file"],
+            name: file.name,
+            path: file.path_display,
+            modified: file.client_modified,
+            size: file.size,
+            starred: this.starredFiles.find(id => file.id === id) ? true : false,
+            iconPath: this.getIconPath(file.name, "file")
+          };
+
+
+          // Extract folder path
+          const folderPath = newFile.path.substring(0, newFile.path.indexOf(newFile.name) - 1);
+          
+          // Update UI if file not already exists
+          let alreadyExists = false,
+          for(let f of this.fileState.paths[folderPath]){
+            if(f.id === newFile.id){
+              alreadyExists = true;
+            }
+          }
+          if(!alreadyExists){
+            this.fileState.paths[folderPath].push(newFile);
+            this.updateSubscribers();
+          }
+          else{
+            // TODO: notify subscribers if upload failed
+          }
+
+        })
+        .catch(error => console.log(error));
+    };
+    reader.readAsArrayBuffer(file);
   }
  
   downloadFile(id: string){

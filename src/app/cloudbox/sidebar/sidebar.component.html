@@ -1,5 +1,10 @@
 <p>
   sidebar works!
 </p>
+<div>
+  <h4>Starred Items</h4>
+  <div *ngFor="let star of starredFiles">
+    <p>{{star.name}}</p>
+  </div>
 
-<button (click)="logout()">Log out</button>
+</div>
