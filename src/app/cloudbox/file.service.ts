@@ -70,31 +70,50 @@ export class FileService {
 
                 // Update files in state
                 for(let changedFile of changedFiles){
+
                   console.log(changedFile);
-                  if(changedFile[".tag"] === "file"){ // New or modified file
+                  const filePath = changedFile["path_display"];
+                  const folderPath = this.getFolderPath(filePath);
+                  
+                  // Check if cached parent folder exists, otherwise do nothing
+                  if(this.fileState.paths[folderPath]){
 
-                  }
-                  else if(changedFile[".tag"] === "folder"){ // New or modified folder
-
-                  }
-                  else if(changedFile[".tag"] === "deleted"){ // Deleted file or folder
-                    const filePath = changedFile["path_display"];
-                    const folderPath = this.getFolderPath(filePath);
-
-                    // Remove entry, if cached
-                    if(this.fileState.paths[folderPath]){
+                    // Deleted file or folder
+                    if(changedFile[".tag"] === "deleted"){ 
+  
+                      // Remove entry
                       this.fileState.paths[folderPath] = this.fileState.paths[folderPath]
                         .filter(file => file.name !== changedFile.name);
+  
+                      // Remove path, if exists (for folder)
+                      delete this.fileState.paths[filePath];
+  
+                      // Redirect to root folder if in deleted folder 
+                      if(this.fileState.currentPath === filePath){
+                        this.fileState.currentPath = "";
+                      }
                     }
+                    // New or modified file or folder
+                    else{ 
 
-                    // Remove path, if exists (for folder)
-                    delete this.fileState.paths[filePath];
+                      // Delete possible pre-existing entry
+                      this.fileState.paths[folderPath] = this.fileState.paths[folderPath]
+                        .filter(file => file.id !== changedFile.id);
 
-                    // Redirect to root folder if in deleted folder 
-                    if(this.fileState.currentPath === filePath){
-                      this.fileState.currentPath = "";
+                      // Push the new entry
+                      let fileType: string = changedFile[".tag"]; // File or Folder
+                      this.fileState.paths[folderPath].push({
+                        id: changedFile.id,
+                        fileType: FileType[fileType],
+                        name: changedFile.name,
+                        path: filePath,
+                        modified: changedFile.client_modified,
+                        size: changedFile.size,
+                        starred: this.starredFiles.find(f => f.id === changedFile.id) ? true : false,
+                        iconPath: this.getIconPath(changedFile.name, fileType)
+                      });
                     }
-                  }
+                  } 
                 }
 
                 this.updateSubscribers();
