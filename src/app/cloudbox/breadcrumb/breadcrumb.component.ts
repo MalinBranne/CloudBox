@@ -14,7 +14,7 @@ export class BreadcrumbComponent implements OnInit {
   constructor(private fileService: FileService) { }
 
   ngOnInit() {
-    this.subscription = this.fileService.getFiles()
+    this.subscription = this.fileService.getState()
       .subscribe(fileState => {
         let currentPath = fileState.currentPath;
         this.breadCrumbs = currentPath.split("/");

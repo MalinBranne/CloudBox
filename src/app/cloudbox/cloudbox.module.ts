@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BrowserModule } from '@angular/platform-browser';
 import { AuthComponent } from './auth/auth.component';
 import { MainComponent } from './main/main.component';
 import { SearchComponent } from './search/search.component';

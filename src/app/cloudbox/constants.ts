@@ -1,3 +1,4 @@
+
 export enum FileType {
     file, folder
 }
@@ -18,4 +19,9 @@ export interface FileState {
         [path: string]: IFile[]
     }
     currentPath: string
+    preview: {
+        data: any,
+        type: string
+    }
+    loading: boolean
 }

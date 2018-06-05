@@ -16,7 +16,7 @@ export class MainComponent implements OnInit {
   constructor(private fileService: FileService) { }
 
   ngOnInit() {
-    this.subscription = this.fileService.getFiles()
+    this.subscription = this.fileService.getState()
       .subscribe(fileState => {
         //här ska vi lägga in felhantering
         // if(det vi får tillbaka är en lista gör detta:)
@@ -31,6 +31,9 @@ export class MainComponent implements OnInit {
     let file = this.fileService.getFileFromId(fileId);
     if(file.fileType === FileType.folder){
       this.fileService.fetchFiles(file.path);
+    }
+    else { // File type is file
+      this.fileService.fetchFileData(file.path);
     }
   }
 

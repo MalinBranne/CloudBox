@@ -11,16 +11,10 @@ export class SidebarComponent implements OnInit {
 
   starredList;
 
-
   constructor(private fileService: FileService) { }
-
-
   
   ngOnInit() {
-  
-    this.starredList = this.fileService.starredFiles;
-    console.log(this.starredList);
-    
+    this.starredList = this.fileService.starredFiles;    
   }
 
   getStarredItem(event){
@@ -29,6 +23,10 @@ export class SidebarComponent implements OnInit {
       
     if(starFile.fileType === FileType.folder){
       this.fileService.fetchFiles(starFile.path);
+    }
+    else{ // File
+      this.fileService.fetchFiles(starFile.path, FileType.file);
+      this.fileService.fetchFileData(starFile.path);
     }
   }
 
