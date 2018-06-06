@@ -14,7 +14,7 @@ export class SidebarComponent implements OnInit {
   constructor(private fileService: FileService) { }
   
   ngOnInit() {
-    this.starredList = this.fileService.starredFiles;    
+    this.starredList = this.fileService.starredFiles;   
   }
 
   getStarredItem(event){

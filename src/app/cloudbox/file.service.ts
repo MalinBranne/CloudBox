@@ -147,10 +147,10 @@ export class FileService {
     let extension = this.getFileExtension(path);
     
     // Define possible preview file extensions
-    let pdfPreviewExtension = "ai|doc|docm|docx|eps|odp|odt|pps|ppsm|ppsx|ppt|pptm|pptx|rtf";
-    let htmlPreviewExtension = "csv|ods|xls|xlsm|xlsx";
-    let imageExtension = "gif|png|jpg|jpeg|bmp|tiff|tif";
-    let textExtension = "txt|html|java|js|css";
+    let pdfPreviewExtension = ["ai", "doc", "docm", "docx", "eps", "odp", "odt", "pps", "ppsm", "ppsx", "ppt", "pptm", "pptx", "rtf"];
+    let htmlPreviewExtension = ["csv", "ods", "xls", "xlsm", "xlsx"];
+    let imageExtension = ["gif", "png", "jpg", "jpeg", "bmp", "tiff", "tif"];
+    let textExtension = ["txt", "html", "java", "js", "css", "log", "tex"];
 
     // Do nothing with files without extensions
     if(extension === ""){
@@ -331,7 +331,7 @@ export class FileService {
         iconPath += "_blank";
       }
       else {
-        let availableExtensions = "aac|ai|aiff|avi|bmp|c|cpp|css|csv|dat|dmg|doc|dotx|dwg|dxf|eps|exe|flv|gif|h|hpp|html|ics|iso|java|jpg|js|key|less|mid|mp3|mp4|mpg|odf|ods|odt|otp|ots|ott|pdf|php|png|ppt|psd|py|qt|rar|rb|rtf|sass|scss|sql|tga|tgz|tiff|txt|wav|xls|xlsx|xml|yml|zip";
+        let availableExtensions = ["aac", "ai", "aiff", "avi", "bmp", "c", "cpp", "css", "csv", "dat", "dmg", "doc", "dotx", "dwg", "dxf", "eps", "exe", "flv", "gif", "h", "hpp", "html", "ics", "iso", "java", "jpg", "js", "key", "less", "mid", "mp3", "mp4", "mpg", "odf", "ods", "odt", "otp", "ots", "ott", "pdf", "php", "png", "ppt", "psd", "py", "qt", "rar", "rb", "rtf", "sass", "scss", "sql", "tga", "tgz", "tiff", "txt", "wav", "xls", "xlsx", "xml", "yml", "zip"];
         if(availableExtensions.includes(extension)){
           iconPath += extension;
         }
@@ -388,7 +388,6 @@ export class FileService {
       const dataArray = new Int8Array(data);
 
       // Start upload to Dropbox
-      this.fileState.loading = true;
       this.dbx.filesUpload({
         contents: dataArray,
         path: this.fileState.currentPath + "/" + file.name,
