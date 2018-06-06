@@ -107,7 +107,7 @@ export class FileService {
                         fileType: FileType[fileType],
                         name: changedFile.name,
                         path: filePath,
-                        modified: changedFile.client_modified,
+                        modified: this.getLocalTime(changedFile.client_modified),
                         size: changedFile.size,
                         starred: this.starredFiles.find(f => f.id === changedFile.id) ? true : false,
                         iconPath: this.getIconPath(changedFile.name, fileType)
@@ -131,6 +131,23 @@ export class FileService {
         });
       })
       .catch(error => console.log(error));
+  }
+
+  //----------------------------------------
+  // Converts utc time format to local time
+  //----------------------------------------
+  getLocalTime(utcTime){
+    if(!utcTime)
+      return null;
+
+    const date = new Date(utcTime);
+    const options = {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit"
+    }
+
+    return date.toLocaleDateString(navigator.language, options);
   }
 
   //----------------------------------------
@@ -281,7 +298,7 @@ export class FileService {
                 fileType: FileType[fileType],
                 name: file.name,
                 path: file.path_display,
-                modified: file.client_modified,
+                modified: this.getLocalTime(file.client_modified),
                 size: file.size,
                 starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
                 iconPath: this.getIconPath(file.name, fileType)
@@ -405,7 +422,7 @@ export class FileService {
             fileType: FileType["file"],
             name: file.name,
             path: file.path_display,
-            modified: file.client_modified,
+            modified: this.getLocalTime(file.client_modified),
             size: file.size,
             starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
             iconPath: this.getIconPath(file.name, "file")
