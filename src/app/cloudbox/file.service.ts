@@ -95,18 +95,7 @@ export class FileService {
                       return file.id === newFile.id;
                     });
 
-                    // Construct
-                    let fileType: string = newFile[".tag"]; // File or Folder
-                    newFile = {
-                      id: newFile.id,
-                      fileType: FileType[fileType],
-                      name: newFile.name,
-                      path: filePath,
-                      modified: this.getLocalTime(newFile.client_modified),
-                      size: newFile.size,
-                      starred: this.starredFiles.find(f => f.id === newFile.id) ? true : false,
-                      iconPath: this.getIconPath(newFile.name, fileType)
-                    };
+                    newFile = this.constructFile(newFile);
 
                     // Store the new entry in cache
                     if(posModified === -1){ // New file
@@ -124,17 +113,7 @@ export class FileService {
                   else{
                     const isStarred = this.starredFiles.find(f => f.id === newFile.id) ? true : false;
                     if(isStarred){
-                      let fileType: string = newFile[".tag"]; // File or Folder
-                      newFile = {
-                        id: newFile.id,
-                        fileType: FileType[fileType],
-                        name: newFile.name,
-                        path: filePath,
-                        modified: this.getLocalTime(newFile.client_modified),
-                        size: newFile.size,
-                        starred: this.starredFiles.find(f => f.id === newFile.id) ? true : false,
-                        iconPath: this.getIconPath(newFile.name, fileType)
-                      };
+                      newFile = this.constructFile(newFile);
                       this.updateStarredFile(newFile);
                     }
                   }
@@ -343,32 +322,21 @@ export class FileService {
 
             // Store file meta data in state (which also is cache)
             this.fileState.currentPath = path;
-            this.fileState.paths[path] = files.map(file => {
-              let fileType: string = file[".tag"]; // File or Folder
-              return ({
-                id: file.id,
-                fileType: FileType[fileType],
-                name: file.name,
-                path: file.path_display,
-                modified: this.getLocalTime(file.client_modified),
-                size: this.getImprovedSize(file.size),
-                starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
-                iconPath: this.getIconPath(file.name, fileType)
-              });
-            });
+            this.fileState.paths[path] = files.map(file => this.constructFile(file));
 
+            this.fileState.loading = false;
             this.updateStarredFiles(this.fileState.paths[path], path);
             this.updateSubscribers();
           })
           .catch(err => {
             this.fileState.error = err;
+            this.fileState.loading = false;
             this.updateSubscribers();
           });
       }
     }
   }
   
-
   //----------------------------------------
   // Get latest cursor, knows about the latest state in the whole dropbox
   //----------------------------------------
@@ -486,16 +454,8 @@ export class FileService {
         .then(file => {
 
           // Build uploaded file
-          const newFile = {
-            id: file.id,
-            fileType: FileType["file"],
-            name: file.name,
-            path: file.path_display,
-            modified: this.getLocalTime(file.client_modified),
-            size: this.getImprovedSize(file.size),
-            starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
-            iconPath: this.getIconPath(file.name, "file")
-          };
+          file[".tag"] = "file";
+          const newFile = this.constructFile(file);
 
           // Extract folder path
           const folderPath = newFile.path.substring(0, newFile.path.indexOf(newFile.name) - 1);
@@ -525,6 +485,24 @@ export class FileService {
         });
     };
     reader.readAsArrayBuffer(file);
+  }
+
+  //----------------------------------------
+  // Construct IFile from Dropbox file
+  //----------------------------------------
+  constructFile(file): IFile{
+    let fileType: string = file[".tag"]; // File or Folder
+
+    return ({
+      id: file.id,
+      fileType: FileType[fileType],
+      name: file.name,
+      path: file.path_display,
+      modified: this.getLocalTime(file.client_modified),
+      size: this.getImprovedSize(file.size),
+      starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
+      iconPath: this.getIconPath(file.name, fileType)
+    });
   }
 
   //----------------------------------------
@@ -664,7 +642,6 @@ export class FileService {
   // Updates all subscribers of state.
   //----------------------------------------
   updateSubscribers(){
-    this.fileState.loading = false;
     console.log(this.fileState);
     this.subject.next(this.fileState);
   }

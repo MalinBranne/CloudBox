@@ -43,18 +43,7 @@ export class SearchService {
 
         this.searchState.latestSearch = response.matches.map(match => {
           //map over result and create new IFile-files fro each entry tht is saved in latestSearch-list
-
-          let fileType: string = match.metadata[".tag"]; // Finding out if search result object is a File or Folder
-          return ({
-            id: match.metadata.id,
-            fileType: match.metadata[".tag"],
-            name: match.metadata.name,
-            path: match.metadata.path_display,
-            modified: match.metadata.client_modified,
-            size: match.metadata.size,
-            starred: this.fileService.starredFiles.find(id => match.metadata.id === id) ? true : false,
-            iconPath: this.fileService.getIconPath(match.metadata.name, fileType)
-          });
+          return this.fileService.constructFile(match.metadata);
         });
 
         this.updateSubscribers();

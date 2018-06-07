@@ -53,7 +53,7 @@ export class SearchComponent implements OnInit {
   }
 
   getFileFromId(id) {
-    this.currentFile = this.searchService.searchState.latestSearch
+    this.currentFile = this.currentSearch
       .find(file => file.id === id);
     return this.currentFile;
   }
@@ -63,7 +63,7 @@ export class SearchComponent implements OnInit {
     let file = this.getFileFromId(fileId);
 
     let path = this.currentFile.path;
-    if (file.fileType === "folder") {
+    if (file.fileType === FileType.folder) {
       this.fileService.fetchFiles(path);
     }
     else { // File
