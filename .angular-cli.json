@@ -21,9 +21,6 @@
       "styles": [
         "styles.css"
       ],
-      "scripts": [
-        "angular-filesize-filter"
-      ],
       "environmentSource": "environments/environment.ts",
       "environments": {
         "dev": "environments/environment.ts",

@@ -1,0 +1,31 @@
+<div>
+
+  <!-- Default, fallback -->
+  <div *ngIf="preview.type === 'default' || preview.type === 'unsupported'">
+    {{ preview.data }}
+  </div>
+
+  <!-- PDF, HTML -->
+  <object 
+    *ngIf="preview.type === 'application/pdf' || preview.type === 'text/html'"
+    [data]="preview.data" 
+    [type]="preview.type"
+  >
+    <embed 
+      [src]="preview.data" 
+      [type]="preview.type" 
+    />
+  </object>
+
+  <!-- Images -->
+  <img  
+    *ngIf="preview.type === 'image'"
+    [src]="preview.data"
+  />
+
+  <!-- Text -->
+  <pre *ngIf="preview.type === 'text'">
+    {{ preview.data }}
+  </pre>
+
+</div>

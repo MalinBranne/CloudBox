@@ -1,0 +1,1 @@
+<a id="-1" (click)="changeFolder($event)">Home</a><span *ngFor="let crumb of breadCrumbs; let i = index"> / <a [id]="i" (click)="changeFolder($event)">{{ crumb }}</a></span>

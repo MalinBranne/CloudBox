@@ -354,6 +354,7 @@ export class FileService {
                 starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
                 iconPath: this.getIconPath(file.name, fileType)
               });
+            });
 
             this.updateStarredFiles(this.fileState.paths[path], path);
             this.updateSubscribers();
@@ -365,6 +366,7 @@ export class FileService {
       }
     }
   }
+  
 
   //----------------------------------------
   // Get latest cursor, knows about the latest state in the whole dropbox
@@ -384,7 +386,7 @@ export class FileService {
   // modifies the file size in to units.
   getImprovedSize(bytes, precision = 1) {
     if (bytes === 0) { return '0 bytes' }
-    if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+    if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '';
     if (typeof precision === 'undefined') precision = 1;
 
     var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
