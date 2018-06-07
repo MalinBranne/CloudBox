@@ -7,45 +7,51 @@
 
 <label for="fileUpload" id="fileUploadButton">Upload</label>
 
+<div *ngIf="!error">
 <!-- File view -->
-<table class="file-list">
-  <thead>
-    <!-- Up to parent folder -->
-    <tr *ngIf="currentPath !== ''" (click)="backToParentFolder()">
-      <th class="file-icon"></th>
-      <th class="file-name">Back To Parent Folder</th>
-      <th></th> 
-      <th></th> 
-      <th></th> 
-      <th></th> 
-    </tr>
-    <!-- Home folder info text -->
-    <tr *ngIf="currentPath === ''">
-      <th></th>
-      <th class="file-name">You're In Your Home Folder.</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let file of fileList" [id]="file.id">
-      <td class="file-icon" (click)="fileAction($event)"><img [src]="file.iconPath" alt="file.iconPath" /></td>
-      <td class="file-name" (click)="fileAction($event)">{{ file.name }}</td>
-      <td class="file-modified" (click)="fileAction($event)">{{ file.modified }}</td>
-      <td class="file-size" (click)="fileAction($event)">{{ file.size }}</td>
-      <td class="file-starred">
-        <span 
-          class="fa-star"
-          [class.fas]="file.starred"
-          [class.far]="!file.starred"
-          (click)="toggleStar($event)"
-        ></span>
-      </td>
-      <td class="file-download">
-        <button *ngIf="file.fileType === FileType.file"  (click)="downloadFile($event)" >Download</button>
-      </td>
-    </tr>
-  </tbody>
-</table>
+  <table class="file-list">
+    <thead>
+      <!-- Up to parent folder -->
+      <tr *ngIf="currentPath !== ''" (click)="backToParentFolder()">
+        <th class="file-icon"></th>
+        <th class="file-name">Back To Parent Folder</th>
+        <th></th> 
+        <th></th> 
+        <th></th> 
+        <th></th> 
+      </tr>
+      <!-- Home folder info text -->
+      <tr *ngIf="currentPath === ''">
+        <th></th>
+        <th class="file-name">You're In Your Home Folder.</th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let file of fileList" [id]="file.id">
+        <td class="file-icon" (click)="fileAction($event)"><img [src]="file.iconPath" alt="file.iconPath" /></td>
+        <td class="file-name" (click)="fileAction($event)">{{ file.name }}</td>
+        <td class="file-modified" (click)="fileAction($event)">{{ file.modified }}</td>
+        <td class="file-size" (click)="fileAction($event)">{{ file.size }}</td>
+        <td class="file-starred">
+          <span 
+            class="fa-star"
+            [class.fas]="file.starred"
+            [class.far]="!file.starred"
+            (click)="toggleStar($event)"
+          ></span>
+        </td>
+        <td class="file-download">
+          <button *ngIf="file.fileType === FileType.file"  (click)="downloadFile($event)" >Download</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="error">
+  <h3>The requested file could not be found</h3>
+  <button (click)="backToHome()">Back to Home Folder</button>
+</div>

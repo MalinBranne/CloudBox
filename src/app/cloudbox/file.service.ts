@@ -4,6 +4,7 @@ import { IFile, FileType, FileState } from './constants';
 
 const Dropbox = require('dropbox').Dropbox;
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/filter'; //? kan nog tas bort, test size formating
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -21,6 +22,7 @@ firebase.initializeApp({
 @Injectable()
 export class FileService {
 
+
   fileState: FileState = {
     paths: {},
     currentPath: "",
@@ -28,8 +30,10 @@ export class FileService {
       data: "Nothing To Preview",
       type: "default"
     },
-    loading: false
+    loading: false,
+    error: null
   };
+
   subject = new BehaviorSubject(this.fileState);
 
   starredFiles: IFile[] = [];
@@ -314,6 +318,9 @@ export class FileService {
   // Fetch file structure with meta info from path
   //----------------------------------------
   fetchFiles(path = "", fileType: FileType = FileType.folder){
+    
+    this.fileState.error = null; // emptying fileState.error
+    
     // Only fetch if there is not another fetch already pending
     if(!this.fileState.loading){
       // Extract folder path, if file path
@@ -343,18 +350,16 @@ export class FileService {
                 name: file.name,
                 path: file.path_display,
                 modified: this.getLocalTime(file.client_modified),
-                size: file.size,
+                size: this.getImprovedSize(file.size),
                 starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
                 iconPath: this.getIconPath(file.name, fileType)
               });
-            });
 
             this.updateStarredFiles(this.fileState.paths[path], path);
             this.updateSubscribers();
           })
           .catch(err => {
-            console.log("There was an error getting the files ");
-            console.log(err);
+            this.fileState.error = err;
             this.updateSubscribers();
           });
       }
@@ -376,6 +381,19 @@ export class FileService {
       .then(response => response.cursor)
   }
 
+  // modifies the file size in to units.
+  getImprovedSize(bytes, precision = 1) {
+    if (bytes === 0) { return '0 bytes' }
+    if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+    if (typeof precision === 'undefined') precision = 1;
+
+    var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+      number = Math.floor(Math.log(bytes) / Math.log(1024)),
+      val = (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision);
+
+    return (val.match(/\.0*$/) ? val.substr(0, val.indexOf('.')) : val) + ' ' + units[number];
+  }
+
   //----------------------------------------
   // Get icon path based on filetype and file extension
   //----------------------------------------
@@ -383,7 +401,7 @@ export class FileService {
     let iconPath = "assets/file-icons/32px/";
 
     // Check if folder
-    if(FileType[fileType] === FileType["folder"]){
+    if (FileType[fileType] === FileType["folder"]) {
       iconPath += "folder";
     }
     else{
@@ -402,7 +420,7 @@ export class FileService {
         }
       }
     }
-    
+
     iconPath += ".png";
     return iconPath;
   }
@@ -443,6 +461,7 @@ export class FileService {
   // Uploads file to dropbox
   //----------------------------------------
   uploadFile(file: File){
+    console.log(file);
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -468,7 +487,7 @@ export class FileService {
             name: file.name,
             path: file.path_display,
             modified: this.getLocalTime(file.client_modified),
-            size: file.size,
+            size: this.getImprovedSize(file.size),
             starred: this.starredFiles.find(f => f.id === file.id) ? true : false,
             iconPath: this.getIconPath(file.name, "file")
           };

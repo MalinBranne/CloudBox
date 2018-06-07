@@ -9,7 +9,7 @@ export interface IFile {
     name: string;
     path: string;
     modified?: string;
-    size?: number;
+    size?: string;
     starred: boolean;
     iconPath: string;
 }
@@ -24,4 +24,9 @@ export interface FileState {
         type: string
     }
     loading: boolean
+    error: {}
+}
+
+export interface SearchState {
+    latestSearch: IFile[]
 }

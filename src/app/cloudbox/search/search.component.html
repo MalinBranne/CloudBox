@@ -1,3 +1,5 @@
-<p>
-  search works!
-</p>
+<input (keyup)="setQuery($event.target.value)" />
+<h5>Search results</h5>
+<div *ngFor="let search of currentSearch">
+  <p id="{{search.id}}" (click)="fileAction($event)">{{search.name}}</p>
+</div>
