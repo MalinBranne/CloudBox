@@ -1,3 +1,4 @@
+
 export enum FileType {
     file, folder
 }
@@ -17,12 +18,15 @@ export interface FileState {
     paths: {
         [path: string]: IFile[]
     }
-    currentPath: string,
+    currentPath: string
+    preview: {
+        data: any,
+        type: string
+    }
+    loading: boolean
     error: {}
 }
 
 export interface SearchState {
-
     latestSearch: IFile[]
-
 }
