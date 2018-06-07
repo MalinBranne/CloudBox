@@ -14,6 +14,7 @@ export class MainComponent implements OnInit {
   searchList: SearchState[];
   fileList: IFile[];
   FileType = FileType;
+  error;
 
   constructor(private fileService: FileService, private searchService: SearchService) { }
 
@@ -22,15 +23,13 @@ export class MainComponent implements OnInit {
       .subscribe(fileState => {
         //här ska vi lägga in felhantering
         // if(det vi får tillbaka är en lista gör detta:)
+
         this.fileList = fileState.paths[fileState.currentPath];
+        this.error = fileState.error;
         //Else: gör detta (error)
       });
     this.fileService.fetchFiles();
 
-    // this.searchList = this.searchService.search(query)
-    //   .subscribe(searchState => {
-    //     this.searchList = searchState.latestSearch.push()
-    //   })
   }
 
   fileAction(event) {

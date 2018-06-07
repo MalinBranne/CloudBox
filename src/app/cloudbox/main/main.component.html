@@ -1,27 +1,26 @@
-<input 
-  type="file" 
-  id="fileUpload"
-  (change)="handleFileUpload($event.target.files)"   
-/>
-<table class="file-list">
-  <tbody>
-    <tr *ngFor="let file of fileList" [id]="file.id">
-      <td class="file-icon" (click)="fileAction($event)"><img [src]="file.iconPath" alt="file.iconPath" /></td>
-      <td class="file-name" (click)="fileAction($event)">{{ file.name }}</td>
-      <td class="file-modified" (click)="fileAction($event)">{{ file.modified }}</td>
-      <td class="file-size" (click)="fileAction($event)">{{ file.size }}</td>
-      <td class="file-starred">
-        <span 
-          class="fa-star"
-          [class.fas]="file.starred"
-          [class.far]="!file.starred"
-          (click)="toggleStar($event)"
-        ></span>
-      </td>
-      <td class="file-download">
-        <button *ngIf="file.fileType === FileType.file"  (click)="downloadFile($event)" >Download</button>
-      </td>
-    </tr>
-  </tbody>
- 
-</table>
+<input type="file" id="fileUpload" (change)="handleFileUpload($event.target.files)" />
+<div *ngIf="!error">
+  <table class="file-list">
+    <tbody>
+      <tr *ngFor="let file of fileList" [id]="file.id">
+        <td class="file-icon" (click)="fileAction($event)">
+          <img [src]="file.iconPath" alt="file.iconPath" />
+        </td>
+        <td class="file-name" (click)="fileAction($event)">{{ file.name }}</td>
+        <td class="file-modified" (click)="fileAction($event)">{{ file.modified }}</td>
+        <td class="file-size" (click)="fileAction($event)">{{ file.size }}</td>
+        <td class="file-starred">
+          <span class="fa-star" [class.fas]="file.starred" [class.far]="!file.starred" (click)="toggleStar($event)"></span>
+        </td>
+        <td class="file-download">
+          <button *ngIf="file.fileType === FileType.file" (click)="downloadFile($event)">Download</button>
+        </td>
+      </tr>
+    </tbody>
+
+  </table>
+</div>
+<div *ngIf="error">
+  <h3>The requested file could not be found</h3>
+  <button>Back to Home Folder</button>
+</div>

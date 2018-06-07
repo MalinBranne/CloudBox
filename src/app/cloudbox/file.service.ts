@@ -4,6 +4,7 @@ import { IFile, FileType, FileState } from './constants';
 
 let Dropbox = require('dropbox').Dropbox;
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/filter'; //? kan nog tas bort, test size formating
 import { BehaviorSubject } from 'rxjs';
 import { Observable } from 'rxjs/Observable';
 
@@ -14,6 +15,7 @@ export class FileService {
   fileState: FileState = {
     paths: {},
     currentPath: "",
+    error: null,
   };
 
   subject = new BehaviorSubject(this.fileState);
@@ -37,6 +39,7 @@ export class FileService {
   }
 
   fetchFiles(path = "") {
+    this.fileState.error = null; // emptying fileState.error
     if (this.fileState.paths[path]) {
       this.fileState.currentPath = path;
       this.updateSubscribers();
@@ -55,16 +58,36 @@ export class FileService {
               name: file.name,
               path: file.path_display,
               modified: file.client_modified,
-              size: file.size,
+              size: this.getImprovedSize(file.size),
               starred: this.starredFiles.find(id => file.id === id) ? true : false,
               iconPath: this.getIconPath(file.name, fileType)
             });
           });
           console.log(this.fileState);
           this.updateSubscribers();
-        });
+        })
+        .catch(error => {
+          console.log(error);
+          this.fileState.error = error;
+          this.updateSubscribers();
+        }) // setting error state
     }
   }
+
+  // modifies the file size in to units.
+  getImprovedSize(bytes, precision = 1) {
+    if (bytes === 0) { return '0 bytes' }
+    if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '-';
+    if (typeof precision === 'undefined') precision = 1;
+
+    var units = ['bytes', 'kB', 'MB', 'GB', 'TB', 'PB'],
+      number = Math.floor(Math.log(bytes) / Math.log(1024)),
+      val = (bytes / Math.pow(1024, Math.floor(number))).toFixed(precision);
+
+    return (val.match(/\.0*$/) ? val.substr(0, val.indexOf('.')) : val) + ' ' + units[number];
+  }
+
+
 
   getIconPath(fileName: string, fileType: string) {
     let iconPath = "assets/file-icons/32px/";
@@ -122,7 +145,7 @@ export class FileService {
             name: file.name,
             path: file.path_display,
             modified: file.client_modified,
-            size: file.size,
+            size: this.getImprovedSize(file.size),
             starred: this.starredFiles.find(id => file.id === id) ? true : false,
             iconPath: this.getIconPath(file.name, "file")
           };

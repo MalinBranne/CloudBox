@@ -8,7 +8,7 @@ export interface IFile {
     name: string;
     path: string;
     modified?: string;
-    size?: number;
+    size?: string;
     starred: boolean;
     iconPath: string;
 }
@@ -17,7 +17,8 @@ export interface FileState {
     paths: {
         [path: string]: IFile[]
     }
-    currentPath: string
+    currentPath: string,
+    error: {}
 }
 
 export interface SearchState {
