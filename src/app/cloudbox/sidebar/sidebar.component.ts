@@ -26,6 +26,7 @@ export class SidebarComponent implements OnInit {
     }
     else{ // File
       this.fileService.fetchFiles(starFile.path, FileType.file);
+      this.fileService.setSelectedFile(starFile.id);
       this.fileService.fetchFileData(starFile.path);
     }
   }

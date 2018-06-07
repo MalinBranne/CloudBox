@@ -23,7 +23,8 @@ export interface FileState {
         data: any,
         type: string
     }
-    loading: boolean
+    loading: boolean,
+    selectedFile: string,
     error: {}
 }
 

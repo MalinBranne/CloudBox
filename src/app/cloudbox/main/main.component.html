@@ -4,7 +4,6 @@
   id="fileUpload"
   (change)="handleFileUpload($event.target.files)"   
 />
-
 <label for="fileUpload" id="fileUploadButton">Upload</label>
 
 <div *ngIf="!error">
@@ -31,7 +30,11 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let file of fileList" [id]="file.id">
+      <tr 
+        *ngFor="let file of fileList" 
+        [id]="file.id"
+        [class.clickedFile]="selectedFile === file.id"  
+      >
         <td class="file-icon" (click)="fileAction($event)"><img [src]="file.iconPath" alt="file.iconPath" /></td>
         <td class="file-name" (click)="fileAction($event)">{{ file.name }}</td>
         <td class="file-modified" (click)="fileAction($event)">{{ file.modified }}</td>
@@ -51,6 +54,7 @@
     </tbody>
   </table>
 </div>
+
 <div *ngIf="error">
   <h3>The requested file could not be found</h3>
   <button (click)="backToHome()">Back to Home Folder</button>

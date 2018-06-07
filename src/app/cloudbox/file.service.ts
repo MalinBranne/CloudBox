@@ -31,6 +31,7 @@ export class FileService {
       type: "default"
     },
     loading: false,
+    selectedFile: null,
     error: null
   };
 
@@ -383,7 +384,9 @@ export class FileService {
       .then(response => response.cursor)
   }
 
+  //----------------------------------------
   // modifies the file size in to units.
+  //----------------------------------------
   getImprovedSize(bytes, precision = 1) {
     if (bytes === 0) { return '0 bytes' }
     if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '';
@@ -557,6 +560,14 @@ export class FileService {
     let currentFile = this.fileState.paths[this.fileState.currentPath]
       .find(file => file.id === id);
     return currentFile;
+  }
+
+  //----------------------------------------
+  // Set selected file
+  //----------------------------------------
+  setSelectedFile(fileId){
+    this.fileState.selectedFile = fileId;
+    this.updateSubscribers();
   }
 
   //----------------------------------------

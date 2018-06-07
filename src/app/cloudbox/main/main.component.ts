@@ -11,15 +11,15 @@ import { SearchService } from '../search.service';
 export class MainComponent implements OnInit {
 
   subscription;
-  searchList: SearchState[];
   fileList: IFile[];
   currentPath: string;
   error;
+  selectedFile: string;
   
   // Is needed so that FileType enum is recognized
   FileType = FileType; 
 
-  constructor(private fileService: FileService, private searchService: SearchService) { }
+  constructor(private fileService: FileService) { }
 
   ngOnInit() {
     this.subscription = this.fileService.getState()
@@ -27,6 +27,7 @@ export class MainComponent implements OnInit {
         this.fileList = fileState.paths[fileState.currentPath];
         this.currentPath = fileState.currentPath;
         this.error = fileState.error;
+        this.selectedFile = fileState.selectedFile;
       });
     this.fileService.fetchFiles();
 
@@ -39,6 +40,7 @@ export class MainComponent implements OnInit {
       this.fileService.fetchFiles(file.path);
     }
     else { // File type is file
+      this.fileService.setSelectedFile(fileId);
       this.fileService.fetchFileData(file.path);
     }
   }
