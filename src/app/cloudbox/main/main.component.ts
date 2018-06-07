@@ -11,7 +11,10 @@ export class MainComponent implements OnInit {
 
   subscription;
   fileList: IFile[];
-  FileType = FileType;
+  currentPath: string;
+  
+  // Is needed so that FileType enum is recognized
+  FileType = FileType; 
 
   constructor(private fileService: FileService) { }
 
@@ -21,6 +24,7 @@ export class MainComponent implements OnInit {
         //här ska vi lägga in felhantering
         // if(det vi får tillbaka är en lista gör detta:)
         this.fileList = fileState.paths[fileState.currentPath];
+        this.currentPath = fileState.currentPath;
         //Else: gör detta (error)
       });
     this.fileService.fetchFiles();
@@ -48,6 +52,12 @@ export class MainComponent implements OnInit {
 
   handleFileUpload(files: FileList){
     this.fileService.uploadFile(files.item(0));
+  }
+
+  backToParentFolder(){
+    const pos = this.currentPath.lastIndexOf("/");
+    const parentPath = this.currentPath.substring(0, pos);
+    this.fileService.fetchFiles(parentPath);
   }
 
 }

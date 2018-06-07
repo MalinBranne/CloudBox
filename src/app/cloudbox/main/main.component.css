@@ -7,6 +7,10 @@ input[type="file"]{
     border: 1px solid black;
 }
 
+thead {
+    background: red;
+}
+
 tbody > tr:hover {
     background-color: rgb(223, 223, 223);
 }

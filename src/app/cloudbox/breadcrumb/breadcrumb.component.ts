@@ -9,7 +9,7 @@ import { FileService } from '../file.service';
 export class BreadcrumbComponent implements OnInit {
 
   subscription;
-  breadCrumbs;
+  breadCrumbs: string[];
 
   constructor(private fileService: FileService) { }
 

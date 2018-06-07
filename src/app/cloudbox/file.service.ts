@@ -32,7 +32,7 @@ export class FileService {
   };
   subject = new BehaviorSubject(this.fileState);
 
-  starredFiles = [];
+  starredFiles: IFile[] = [];
   cursor;
 
   dbx = new Dropbox({ clientId: this.authService.CLIENT_ID, accessToken: this.authService.ACCESS_TOKEN });
@@ -68,52 +68,96 @@ export class FileService {
                 // Save relevant info
                 const changedFiles = response.entries;
 
-                // Update files in state
+                // Categorize incoming files
+                let newFiles = [], deletedFiles = [];
                 for(let changedFile of changedFiles){
+                  if(changedFile[".tag"] === "deleted")
+                    deletedFiles.push(changedFile);
+                  else
+                    newFiles.push(changedFile);
+                }
 
-                  console.log(changedFile);
-                  const filePath = changedFile["path_display"];
+                // Do stuff for new or modified files
+                for(let newFile of newFiles){
+                  const filePath = newFile["path_display"];
                   const folderPath = this.getFolderPath(filePath);
                   
-                  // Check if cached parent folder exists, otherwise do nothing
+                  // Check if cached parent folder exists
                   if(this.fileState.paths[folderPath]){
 
-                    // Deleted file or folder
-                    if(changedFile[".tag"] === "deleted"){ 
-  
-                      // Remove entry
-                      this.fileState.paths[folderPath] = this.fileState.paths[folderPath]
-                        .filter(file => file.name !== changedFile.name);
-  
-                      // Remove path, if exists (for folder)
-                      delete this.fileState.paths[filePath];
-  
-                      // Redirect to root folder if in deleted folder 
-                      if(this.fileState.currentPath === filePath){
-                        this.fileState.currentPath = "";
-                      }
+                    // See if it is a modified file
+                    const posModified = this.fileState.paths[folderPath].findIndex(file => {
+                      return file.id === newFile.id;
+                    });
+
+                    // Construct
+                    let fileType: string = newFile[".tag"]; // File or Folder
+                    newFile = {
+                      id: newFile.id,
+                      fileType: FileType[fileType],
+                      name: newFile.name,
+                      path: filePath,
+                      modified: this.getLocalTime(newFile.client_modified),
+                      size: newFile.size,
+                      starred: this.starredFiles.find(f => f.id === newFile.id) ? true : false,
+                      iconPath: this.getIconPath(newFile.name, fileType)
+                    };
+
+                    // Store the new entry in cache
+                    if(posModified === -1){ // New file
+                      this.fileState.paths[folderPath].push(newFile);
                     }
-                    // New or modified file or folder
-                    else{ 
-
-                      // Delete possible pre-existing entry
-                      this.fileState.paths[folderPath] = this.fileState.paths[folderPath]
-                        .filter(file => file.id !== changedFile.id);
-
-                      // Push the new entry
-                      let fileType: string = changedFile[".tag"]; // File or Folder
-                      this.fileState.paths[folderPath].push({
-                        id: changedFile.id,
+                    else { // Modified file
+                      this.fileState.paths[folderPath][posModified] = newFile;
+                    }
+                    
+                    // Update possible entry in starred files
+                    if(newFile.starred)
+                      this.updateStarredFile(newFile);
+                  }
+                  // Cached parent folder didn't exist, but check for entry in starred files
+                  else{
+                    const isStarred = this.starredFiles.find(f => f.id === newFile.id) ? true : false;
+                    if(isStarred){
+                      let fileType: string = newFile[".tag"]; // File or Folder
+                      newFile = {
+                        id: newFile.id,
                         fileType: FileType[fileType],
-                        name: changedFile.name,
+                        name: newFile.name,
                         path: filePath,
-                        modified: this.getLocalTime(changedFile.client_modified),
-                        size: changedFile.size,
-                        starred: this.starredFiles.find(f => f.id === changedFile.id) ? true : false,
-                        iconPath: this.getIconPath(changedFile.name, fileType)
-                      });
+                        modified: this.getLocalTime(newFile.client_modified),
+                        size: newFile.size,
+                        starred: this.starredFiles.find(f => f.id === newFile.id) ? true : false,
+                        iconPath: this.getIconPath(newFile.name, fileType)
+                      };
+                      this.updateStarredFile(newFile);
                     }
-                  } 
+                  }
+                }
+
+                // Do stuff for deleted files
+                for(let deletedFile of deletedFiles){
+                  const filePath = deletedFile["path_display"];
+                  const folderPath = this.getFolderPath(filePath);
+
+                  // Check if cached parent folder exists
+                  if(this.fileState.paths[folderPath]){
+
+                    // Remove entry
+                    this.fileState.paths[folderPath] = this.fileState.paths[folderPath]
+                      .filter(file => file.name !== deletedFile.name);
+
+                    // Remove path, if exists (for folder)
+                    delete this.fileState.paths[filePath];
+
+                    // Redirect to root folder if in deleted folder 
+                    if(this.fileState.currentPath === filePath){
+                      this.fileState.currentPath = "";
+                    }
+                  }
+                  
+                  // Remove a possible entry in starred files
+                  this.updateStarredFile(deletedFile, true);
                 }
 
                 this.updateSubscribers();
@@ -137,6 +181,7 @@ export class FileService {
   // Converts utc time format to local time
   //----------------------------------------
   getLocalTime(utcTime){
+    // Empty string for folders
     if(!utcTime)
       return null;
 
@@ -283,7 +328,6 @@ export class FileService {
       }
       // Else, fetch from dropbox
       else{
-        // Set the login anchors href using dbx.getAuthenticationUrl()
         this.fileState.loading = true;
         this.dbx.filesListFolder({ path })
           .then(response => response.entries)
@@ -305,6 +349,7 @@ export class FileService {
               });
             });
 
+            this.updateStarredFiles(this.fileState.paths[path], path);
             this.updateSubscribers();
           })
           .catch(err => {
@@ -510,6 +555,75 @@ export class FileService {
       this.starredFiles.splice(index, 1); // tar bort starredFiles första state som är en tom lista
     }
 
+    // Update local storage
+    localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
+  }
+
+  //----------------------------------------
+  // Updates or removes starred file
+  //----------------------------------------
+  updateStarredFile(file, isDeleted = false){
+
+    // Special case for deleted files (don't know if starred or not)
+    if(isDeleted){
+      const filePath = file["path_display"];
+      const pos = this.starredFiles.findIndex(starredFile => {
+        return starredFile.path === filePath;
+      });
+      if(pos !== -1){
+        this.starredFiles.splice(pos, 1);
+      }
+    }
+    // Modified starred file 
+    else{
+      const pos = this.starredFiles.findIndex(starredFile => {
+        return file.id === starredFile.id;
+      });
+      if(pos !== -1){
+        this.starredFiles[pos] = file;
+      }
+    }
+    
+    // Update local storage
+    localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
+  }
+
+  //----------------------------------------
+  // Updates or removes starred files, after syncing to incoming files in path
+  //----------------------------------------
+  updateStarredFiles(incomingFiles, path){
+
+    // Prapare check with starred files in this path
+    const isStarredInPath = this.starredFiles.map((file, index) => {
+      return this.getFolderPath(file.path) === path;
+    });
+
+    // Update starred files list
+    for(let file of incomingFiles){
+      // Update starred file with incoming info
+      if(file.starred){
+        for(let i in this.starredFiles){
+          if(isStarredInPath[i]){
+            // Match! 
+            if(file.id === this.starredFiles[i].id){
+              // Now update!
+              this.starredFiles[i] = file;
+
+              // Mark starred file as updated
+              isStarredInPath[i] = false;
+            }
+          }
+        }
+      }
+    }
+    
+    // Delete any starred files that didn't exist
+    for(let i = this.starredFiles.length - 1; i >= 0; i--){
+      if(isStarredInPath[i]){
+        this.starredFiles.splice(i, 1);
+      }
+    }
+    
     // Update local storage
     localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
   }
