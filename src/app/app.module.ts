@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { CloudboxModule as RunModule } from './cloudbox/cloudbox.module';
 import { AuthService } from './cloudbox/auth.service';
 import { FileService } from './cloudbox/file.service';
+import { SearchService } from './cloudbox/search.service';
 
 
 // ...
@@ -21,7 +22,7 @@ import { FileService } from './cloudbox/file.service';
   exports: [
     RunModule
   ],
-  providers: [AuthService, FileService],
+  providers: [AuthService, FileService, SearchService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

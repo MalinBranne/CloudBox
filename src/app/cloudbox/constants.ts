@@ -19,3 +19,9 @@ export interface FileState {
     }
     currentPath: string
 }
+
+export interface SearchState {
+
+    latestSearch: IFile[]
+
+}

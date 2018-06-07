@@ -1,0 +1,37 @@
+steg 1. 
+Lägg koden för autenticering i en service
+
+*Läs på javaScript webtokens*
+
+
+1. XD
+2. authenticering
+3. localstorage
+4. Mainarea med mappar osv (api)
+4. Metadata 
+5. starred (push to starred array)
+6. om starred item förvsinner från starred lista på dropbox så försviner den även hos oss (prenumeration på starred?)
+7. ikoner för varje filtyp, implementeras med switch sats. thumbnail för bild-fil
+8. download file
+9. upload
+10. back to parent folder
+11. breadcrumbs
+12. dold div som visar preview när man klickar på en fil
+13. search
+14. sessionstorage för att komma ihåg senaste sökresultat
+15. subscribe to dropbox changes - webhooks and certain Firebase features - se projektbeskrivning
+16. deploy
+
+
+states:
+LoggedIn: true or false
+
+views:
+1. Log in page
+2. Logged in
+
+Components:
+main
+auth
+...
+minns ej?? :(

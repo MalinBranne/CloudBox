@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FileService } from '../file.service';
-import { IFile, FileType } from '../constants';
+import { IFile, FileType, SearchState } from '../constants';
+import { SearchService } from '../search.service';
 
 @Component({
   selector: 'main',
@@ -10,10 +11,11 @@ import { IFile, FileType } from '../constants';
 export class MainComponent implements OnInit {
 
   subscription;
+  searchList: SearchState[];
   fileList: IFile[];
   FileType = FileType;
 
-  constructor(private fileService: FileService) { }
+  constructor(private fileService: FileService, private searchService: SearchService) { }
 
   ngOnInit() {
     this.subscription = this.fileService.getFiles()
@@ -24,17 +26,22 @@ export class MainComponent implements OnInit {
         //Else: gör detta (error)
       });
     this.fileService.fetchFiles();
+
+    // this.searchList = this.searchService.search(query)
+    //   .subscribe(searchState => {
+    //     this.searchList = searchState.latestSearch.push()
+    //   })
   }
 
-  fileAction(event){
+  fileAction(event) {
     let fileId = event.path[1].id;
     let file = this.fileService.getFileFromId(fileId);
-    if(file.fileType === FileType.folder){
+    if (file.fileType === FileType.folder) {
       this.fileService.fetchFiles(file.path);
     }
   }
 
-  toggleStar(event){
+  toggleStar(event) {
     this.fileService.toggleStar(event.path[2].id);
   }
 
@@ -43,7 +50,7 @@ export class MainComponent implements OnInit {
     this.fileService.downloadFile(id);
   }
 
-  handleFileUpload(files: FileList){
+  handleFileUpload(files: FileList) {
     this.fileService.uploadFile(files.item(0));
   }
 
