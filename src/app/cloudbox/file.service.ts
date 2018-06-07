@@ -67,7 +67,6 @@ export class FileService {
           this.updateSubscribers();
         })
         .catch(error => {
-          console.log(error);
           this.fileState.error = error;
           this.updateSubscribers();
         }) // setting error state

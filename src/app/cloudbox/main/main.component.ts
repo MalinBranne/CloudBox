@@ -53,4 +53,8 @@ export class MainComponent implements OnInit {
     this.fileService.uploadFile(files.item(0));
   }
 
+  backToHome() {
+    this.fileService.fetchFiles();
+  }
+
 }
