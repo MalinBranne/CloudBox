@@ -1,12 +1,14 @@
-<div>
-  <h4>Starred Items</h4>
-  <div [id]="star.id" *ngFor="let star of starredList" (click)="getStarredItem($event)">
+<!-- <div id="sidebarContainer"> -->
+<div class="starred">
+  <h6>Starred Items</h6>
+  <div class="force-overflow" [id]="star.id" *ngFor="let star of starredList" (click)="getStarredItem($event)">
     {{star.name}}
   </div>
 </div>
-<div>
-  <h5>Search results</h5>
-  <div *ngFor="let search of currentSearch">
+<div class="search">
+  <h6>Search results</h6>
+  <div class="force-overflow" *ngFor="let search of currentSearch">
     <p id="{{search.id}}" (click)="fileAction($event)">{{search.name}}</p>
   </div>
 </div>
+<!-- </div> -->

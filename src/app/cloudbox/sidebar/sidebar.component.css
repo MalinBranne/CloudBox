@@ -1,0 +1,24 @@
+#sidebarContainer {
+    max-height: 65vh;
+    padding-left: 10px;
+}
+
+.starred
+{
+    margin-bottom: 5px;
+    max-height: 50%;
+    overflow-y: scroll;
+    
+}
+.search
+{
+
+    max-height: 50%;
+    overflow-y: scroll;
+    
+}
+
+ .force-overflow
+{
+min-height: 0px;
+} 
