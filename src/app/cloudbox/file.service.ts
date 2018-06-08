@@ -337,7 +337,7 @@ export class FileService {
     }
 
   }
-  fileState.error = null; // emptying fileState.error
+
   //----------------------------------------
   // Get latest cursor, knows about the latest state in the whole dropbox
   //----------------------------------------
