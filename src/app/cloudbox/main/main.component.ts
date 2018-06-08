@@ -15,15 +15,18 @@ export class MainComponent implements OnInit {
   currentPath: string;
   error;
   selectedFile: string;
-  
+
   // Is needed so that FileType enum is recognized
-  FileType = FileType; 
+  FileType = FileType;
 
   constructor(private fileService: FileService) { }
 
   ngOnInit() {
+
+
     this.subscription = this.fileService.getState()
       .subscribe(fileState => {
+        this.fileService.fileState.error = null; // test, wanna make sure there is no error in state on init, but if I make a new folder and then delete it disapears when clicking
         this.fileList = fileState.paths[fileState.currentPath];
         this.currentPath = fileState.currentPath;
         this.error = fileState.error;
@@ -61,7 +64,7 @@ export class MainComponent implements OnInit {
     this.fileService.uploadFile(files.item(0));
   }
 
-  backToParentFolder(){
+  backToParentFolder() {
     const pos = this.currentPath.lastIndexOf("/");
     const parentPath = this.currentPath.substring(0, pos);
     this.fileService.fetchFiles(parentPath);

@@ -10,7 +10,7 @@ import { Observable } from 'rxjs/Observable';
 import { DomSanitizer } from '@angular/platform-browser';
 
 // Firebase
-import * as firebase from 'firebase'; 
+import * as firebase from 'firebase';
 firebase.initializeApp({
   // Info found in Firebase console, get started
   apiKey: "AIzaSyCN4CfLZv9feveBxQR2p00hqp7U_n64db0",
@@ -46,10 +46,10 @@ export class FileService {
   //----------------------------------------
   // Constructor
   //----------------------------------------
-  constructor(private authService: AuthService, private sanitizer: DomSanitizer) { 
+  constructor(private authService: AuthService, private sanitizer: DomSanitizer) {
 
     // Create or sync starred files in local storage for current user
-    if(!localStorage.getItem("starredFiles" + this.authService.USER_ID)){
+    if (!localStorage.getItem("starredFiles" + this.authService.USER_ID)) {
       localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
     }
     this.starredFiles = JSON.parse(localStorage.getItem("starredFiles" + this.authService.USER_ID));
@@ -65,30 +65,30 @@ export class FileService {
 
           const wasModified = snapshot.val();
           // Check if there are changes to dropbox database
-          if(wasModified){
+          if (wasModified) {
 
             // Get modified files
-            this.dbx.filesListFolderContinue({cursor: this.cursor})
+            this.dbx.filesListFolderContinue({ cursor: this.cursor })
               .then(response => {
                 // Save relevant info
                 const changedFiles = response.entries;
 
                 // Categorize incoming files
                 let newFiles = [], deletedFiles = [];
-                for(let changedFile of changedFiles){
-                  if(changedFile[".tag"] === "deleted")
+                for (let changedFile of changedFiles) {
+                  if (changedFile[".tag"] === "deleted")
                     deletedFiles.push(changedFile);
                   else
                     newFiles.push(changedFile);
                 }
 
                 // Do stuff for new or modified files
-                for(let newFile of newFiles){
+                for (let newFile of newFiles) {
                   const filePath = newFile["path_display"];
                   const folderPath = this.getFolderPath(filePath);
-                  
+
                   // Check if cached parent folder exists
-                  if(this.fileState.paths[folderPath]){
+                  if (this.fileState.paths[folderPath]) {
 
                     // See if it is a modified file
                     const posModified = this.fileState.paths[folderPath].findIndex(file => {
@@ -98,21 +98,21 @@ export class FileService {
                     newFile = this.constructFile(newFile);
 
                     // Store the new entry in cache
-                    if(posModified === -1){ // New file
+                    if (posModified === -1) { // New file
                       this.fileState.paths[folderPath].push(newFile);
                     }
                     else { // Modified file
                       this.fileState.paths[folderPath][posModified] = newFile;
                     }
-                    
+
                     // Update possible entry in starred files
-                    if(newFile.starred)
+                    if (newFile.starred)
                       this.updateStarredFile(newFile);
                   }
                   // Cached parent folder didn't exist, but check for entry in starred files
-                  else{
+                  else {
                     const isStarred = this.starredFiles.find(f => f.id === newFile.id) ? true : false;
-                    if(isStarred){
+                    if (isStarred) {
                       newFile = this.constructFile(newFile);
                       this.updateStarredFile(newFile);
                     }
@@ -120,12 +120,12 @@ export class FileService {
                 }
 
                 // Do stuff for deleted files
-                for(let deletedFile of deletedFiles){
+                for (let deletedFile of deletedFiles) {
                   const filePath = deletedFile["path_display"];
                   const folderPath = this.getFolderPath(filePath);
 
                   // Check if cached parent folder exists
-                  if(this.fileState.paths[folderPath]){
+                  if (this.fileState.paths[folderPath]) {
 
                     // Remove entry
                     this.fileState.paths[folderPath] = this.fileState.paths[folderPath]
@@ -135,11 +135,11 @@ export class FileService {
                     delete this.fileState.paths[filePath];
 
                     // Redirect to root folder if in deleted folder 
-                    if(this.fileState.currentPath === filePath){
+                    if (this.fileState.currentPath === filePath) {
                       this.fileState.currentPath = "";
                     }
                   }
-                  
+
                   // Remove a possible entry in starred files
                   this.updateStarredFile(deletedFile, true);
                 }
@@ -150,7 +150,7 @@ export class FileService {
 
             // Reset firebase modified flag
             this.databaseRef.set(false);
-            
+
             // Update dropbox cursor
             this.getDropboxCursor()
               .then(cursor => this.cursor = cursor)
@@ -164,9 +164,9 @@ export class FileService {
   //----------------------------------------
   // Converts utc time format to local time
   //----------------------------------------
-  getLocalTime(utcTime){
+  getLocalTime(utcTime) {
     // Empty string for folders
-    if(!utcTime)
+    if (!utcTime)
       return null;
 
     const date = new Date(utcTime);
@@ -182,16 +182,16 @@ export class FileService {
   //----------------------------------------
   // Call this to subscribe to state
   //----------------------------------------
-  getState(): Observable<FileState>{
-      return this.subject.asObservable();
+  getState(): Observable<FileState> {
+    return this.subject.asObservable();
   }
 
   //----------------------------------------
   // Fetch file data depending on file extension, for later preview
   //----------------------------------------
-  fetchFileData(path = ""){
+  fetchFileData(path = "") {
     let extension = this.getFileExtension(path);
-    
+
     // Define possible preview file extensions
     let pdfPreviewExtension = ["ai", "doc", "docm", "docx", "eps", "odp", "odt", "pps", "ppsm", "ppsx", "ppt", "pptm", "pptx", "rtf"];
     let htmlPreviewExtension = ["csv", "ods", "xls", "xlsm", "xlsx"];
@@ -199,7 +199,7 @@ export class FileService {
     let textExtension = ["txt", "html", "java", "js", "css", "log", "tex"];
 
     // Do nothing with files without extensions
-    if(extension === ""){
+    if (extension === "") {
       this.fileState.preview = {
         data: "No Preview Could Be Generated",
         type: "unsupported"
@@ -207,9 +207,9 @@ export class FileService {
       this.updateSubscribers();
     }
     // Download PDF file
-    else if(extension === "pdf"){
-      
-      this.dbx.filesGetTemporaryLink({path})
+    else if (extension === "pdf") {
+
+      this.dbx.filesGetTemporaryLink({ path })
         .then(response => response.link)
         .then(link => {
 
@@ -217,7 +217,7 @@ export class FileService {
           let xhr = new XMLHttpRequest();
           xhr.addEventListener("load", (event) => {
             let response = event.currentTarget["response"];
-            let file = new Blob([response], {type: 'application/pdf'});
+            let file = new Blob([response], { type: 'application/pdf' });
             let fileURL = URL.createObjectURL(file);
             this.fileState.preview = {
               data: this.sanitizer.bypassSecurityTrustResourceUrl(fileURL),
@@ -232,9 +232,9 @@ export class FileService {
         .catch(error => console.log(error));
     }
     // Download PDF and HTML previews of files
-    else if(pdfPreviewExtension.includes(extension) || htmlPreviewExtension.includes(extension)){
+    else if (pdfPreviewExtension.includes(extension) || htmlPreviewExtension.includes(extension)) {
 
-      this.dbx.filesGetPreview({path})
+      this.dbx.filesGetPreview({ path })
         .then(response => response.fileBlob)
         .then(fileBlob => {
 
@@ -248,9 +248,9 @@ export class FileService {
         .catch(error => console.log(error));
     }
     // Get link of image
-    else if(imageExtension.includes(extension)){
+    else if (imageExtension.includes(extension)) {
 
-      this.dbx.filesGetTemporaryLink({path})
+      this.dbx.filesGetTemporaryLink({ path })
         .then(response => response.link)
         .then(link => {
 
@@ -263,9 +263,9 @@ export class FileService {
         .catch(error => console.log(error));
     }
     // Get link of text files
-    else if(textExtension.includes(extension)){
+    else if (textExtension.includes(extension)) {
 
-      this.dbx.filesGetTemporaryLink({path})
+      this.dbx.filesGetTemporaryLink({ path })
         .then(response => response.link)
         .then(link => {
 
@@ -285,7 +285,7 @@ export class FileService {
         .catch(error => console.log(error));
     }
     // Default is unsupported preview
-    else{
+    else {
       this.fileState.preview = {
         data: "No Preview Could Be Generated",
         type: "unsupported"
@@ -297,24 +297,24 @@ export class FileService {
   //----------------------------------------
   // Fetch file structure with meta info from path
   //----------------------------------------
-  fetchFiles(path = "", fileType: FileType = FileType.folder){
-    
+  fetchFiles(path = "", fileType: FileType = FileType.folder) {
+
     this.fileState.error = null; // emptying fileState.error
-    
+
     // Only fetch if there is not another fetch already pending
-    if(!this.fileState.loading){
+    if (!this.fileState.loading) {
       // Extract folder path, if file path
-      if(fileType === FileType.file){
+      if (fileType === FileType.file) {
         path = this.getFolderPath(path);
       }
 
       // If the path has already been visited, fetch from cache
-      if(this.fileState.paths[path]){
+      if (this.fileState.paths[path]) {
         this.fileState.currentPath = path;
         this.updateSubscribers();
       }
       // Else, fetch from dropbox
-      else{
+      else {
         this.fileState.loading = true;
         this.dbx.filesListFolder({ path })
           .then(response => response.entries)
@@ -335,12 +335,13 @@ export class FileService {
           });
       }
     }
+
   }
-  
+  fileState.error = null; // emptying fileState.error
   //----------------------------------------
   // Get latest cursor, knows about the latest state in the whole dropbox
   //----------------------------------------
-  getDropboxCursor(){
+  getDropboxCursor() {
     return this.dbx.filesListFolderGetLatestCursor({
       path: "",
       recursive: true,
@@ -370,22 +371,22 @@ export class FileService {
   //----------------------------------------
   // Get icon path based on filetype and file extension
   //----------------------------------------
-  getIconPath(fileName: string, fileType: string){
+  getIconPath(fileName: string, fileType: string) {
     let iconPath = "assets/file-icons/32px/";
 
     // Check if folder
     if (FileType[fileType] === FileType["folder"]) {
       iconPath += "folder";
     }
-    else{
+    else {
       let extension = this.getFileExtension(fileName);
       // No file extension
-      if(extension === ""){
+      if (extension === "") {
         iconPath += "_blank";
       }
       else {
         let availableExtensions = ["aac", "ai", "aiff", "avi", "bmp", "c", "cpp", "css", "csv", "dat", "dmg", "doc", "dotx", "dwg", "dxf", "eps", "exe", "flv", "gif", "h", "hpp", "html", "ics", "iso", "java", "jpg", "js", "key", "less", "mid", "mp3", "mp4", "mpg", "odf", "ods", "odt", "otp", "ots", "ott", "pdf", "php", "png", "ppt", "psd", "py", "qt", "rar", "rb", "rtf", "sass", "scss", "sql", "tga", "tgz", "tiff", "txt", "wav", "xls", "xlsx", "xml", "yml", "zip"];
-        if(availableExtensions.includes(extension)){
+        if (availableExtensions.includes(extension)) {
           iconPath += extension;
         }
         else {
@@ -402,8 +403,8 @@ export class FileService {
   // Get lower case file extension of file from path. 
   // If no extension exists, an empty string is returned.
   //----------------------------------------
-  getFileExtension(filePath){
-    let fileName = this.getFileName(filePath);    
+  getFileExtension(filePath) {
+    let fileName = this.getFileName(filePath);
     let pos = fileName.lastIndexOf(".");
     let extension = pos < 1 ? "" : fileName.slice(pos + 1);
 
@@ -413,7 +414,7 @@ export class FileService {
   //----------------------------------------
   // Get file name from path
   //----------------------------------------
-  getFileName(filePath){
+  getFileName(filePath) {
     let pos = filePath.lastIndexOf("/");
     let fileName = filePath.slice(pos + 1);
 
@@ -423,7 +424,7 @@ export class FileService {
   //----------------------------------------
   // Get folder path from file path. That is, remove file from path string.
   //----------------------------------------
-  getFolderPath(filePath){
+  getFolderPath(filePath) {
     let pos = filePath.lastIndexOf("/");
     let folderPath = filePath.substring(0, pos);
 
@@ -433,7 +434,7 @@ export class FileService {
   //----------------------------------------
   // Uploads file to dropbox
   //----------------------------------------
-  uploadFile(file: File){
+  uploadFile(file: File) {
     console.log(file);
 
     const reader = new FileReader();
@@ -459,22 +460,22 @@ export class FileService {
 
           // Extract folder path
           const folderPath = newFile.path.substring(0, newFile.path.indexOf(newFile.name) - 1);
-          
+
           // Check if file already exists
           let alreadyExists = false;
-          for(let f of this.fileState.paths[folderPath]){
-            if(f.id === newFile.id){
+          for (let f of this.fileState.paths[folderPath]) {
+            if (f.id === newFile.id) {
               alreadyExists = true;
             }
           }
 
           // Update UI if file not already exists
-          if(!alreadyExists){
+          if (!alreadyExists) {
             this.fileState.paths[folderPath].push(newFile);
             this.updateSubscribers();
           }
           // Else, notify subscribers 
-          else{
+          else {
             // TODO
           }
 
@@ -490,7 +491,7 @@ export class FileService {
   //----------------------------------------
   // Construct IFile from Dropbox file
   //----------------------------------------
-  constructFile(file): IFile{
+  constructFile(file): IFile {
     let fileType: string = file[".tag"]; // File or Folder
 
     return ({
@@ -508,16 +509,16 @@ export class FileService {
   //----------------------------------------
   // Downloads file from Dropbox, based on ID
   //----------------------------------------
-  downloadFileFromId(id: string){
+  downloadFileFromId(id: string) {
     let currentFile = this.getFileFromId(id);
     this.downloadFile(currentFile["path"]);
   }
-  
+
   //----------------------------------------
   // Downloads file from Dropbox, based on path
   //----------------------------------------
-  downloadFile(path: string){
-    this.dbx.filesGetTemporaryLink({path})
+  downloadFile(path: string) {
+    this.dbx.filesGetTemporaryLink({ path })
       .then(response => response.link)
       .then(link => {
         // Creates a temporary download link, so that download starts immediately
@@ -534,7 +535,7 @@ export class FileService {
   //----------------------------------------
   // Get file from ID. Must be a file that is in cache.
   //----------------------------------------
-  getFileFromId(id){
+  getFileFromId(id) {
     let currentFile = this.fileState.paths[this.fileState.currentPath]
       .find(file => file.id === id);
     return currentFile;
@@ -543,7 +544,7 @@ export class FileService {
   //----------------------------------------
   // Set selected file
   //----------------------------------------
-  setSelectedFile(fileId){
+  setSelectedFile(fileId) {
     this.fileState.selectedFile = fileId;
     this.updateSubscribers();
   }
@@ -551,14 +552,14 @@ export class FileService {
   //----------------------------------------
   // Toggle starring of a file. Must be in cache.
   //----------------------------------------
-  toggleStar(fileId){
+  toggleStar(fileId) {
     let currentFile = this.getFileFromId(fileId);
     currentFile.starred = !currentFile.starred;
 
     // If it was starred, push to array
-    if (currentFile.starred){
+    if (currentFile.starred) {
       this.starredFiles.push(currentFile);
-    } 
+    }
     // Else remove it from array
     else {
       let index = this.starredFiles.findIndex(file => file.id === fileId);
@@ -572,28 +573,28 @@ export class FileService {
   //----------------------------------------
   // Updates or removes starred file
   //----------------------------------------
-  updateStarredFile(file, isDeleted = false){
+  updateStarredFile(file, isDeleted = false) {
 
     // Special case for deleted files (don't know if starred or not)
-    if(isDeleted){
+    if (isDeleted) {
       const filePath = file["path_display"];
       const pos = this.starredFiles.findIndex(starredFile => {
         return starredFile.path === filePath;
       });
-      if(pos !== -1){
+      if (pos !== -1) {
         this.starredFiles.splice(pos, 1);
       }
     }
     // Modified starred file 
-    else{
+    else {
       const pos = this.starredFiles.findIndex(starredFile => {
         return file.id === starredFile.id;
       });
-      if(pos !== -1){
+      if (pos !== -1) {
         this.starredFiles[pos] = file;
       }
     }
-    
+
     // Update local storage
     localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
   }
@@ -601,7 +602,7 @@ export class FileService {
   //----------------------------------------
   // Updates or removes starred files, after syncing to incoming files in path
   //----------------------------------------
-  updateStarredFiles(incomingFiles, path){
+  updateStarredFiles(incomingFiles, path) {
 
     // Prapare check with starred files in this path
     const isStarredInPath = this.starredFiles.map((file, index) => {
@@ -609,13 +610,13 @@ export class FileService {
     });
 
     // Update starred files list
-    for(let file of incomingFiles){
+    for (let file of incomingFiles) {
       // Update starred file with incoming info
-      if(file.starred){
-        for(let i in this.starredFiles){
-          if(isStarredInPath[i]){
+      if (file.starred) {
+        for (let i in this.starredFiles) {
+          if (isStarredInPath[i]) {
             // Match! 
-            if(file.id === this.starredFiles[i].id){
+            if (file.id === this.starredFiles[i].id) {
               // Now update!
               this.starredFiles[i] = file;
 
@@ -626,14 +627,14 @@ export class FileService {
         }
       }
     }
-    
+
     // Delete any starred files that didn't exist
-    for(let i = this.starredFiles.length - 1; i >= 0; i--){
-      if(isStarredInPath[i]){
+    for (let i = this.starredFiles.length - 1; i >= 0; i--) {
+      if (isStarredInPath[i]) {
         this.starredFiles.splice(i, 1);
       }
     }
-    
+
     // Update local storage
     localStorage.setItem("starredFiles" + this.authService.USER_ID, JSON.stringify(this.starredFiles));
   }
@@ -641,7 +642,7 @@ export class FileService {
   //----------------------------------------
   // Updates all subscribers of state.
   //----------------------------------------
-  updateSubscribers(){
+  updateSubscribers() {
     console.log(this.fileState);
     this.subject.next(this.fileState);
   }
