@@ -2,3 +2,11 @@
 
 @import url(https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css);
 @import url(https://use.fontawesome.com/releases/v5.0.13/css/all.css);
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
