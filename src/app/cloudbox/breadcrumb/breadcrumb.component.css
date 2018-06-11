@@ -3,4 +3,5 @@
         color: white;
         font-style: bold;
         cursor: pointer;
+        text-shadow: 1px 1px grey;
     }
