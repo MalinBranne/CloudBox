@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { SearchService } from '../search.service';
 
 @Component({
   selector: 'main-page',
@@ -8,8 +7,8 @@ import { SearchService } from '../search.service';
 })
 export class MainPageComponent {
 
-  constructor(private searchService: SearchService) { }
+  constructor() { }
 
-  ngOnInit() { }
+  ngOnInit() {}
 
 }

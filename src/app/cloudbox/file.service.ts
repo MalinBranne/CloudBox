@@ -646,6 +646,9 @@ export class FileService {
     this.subject.next(this.fileState);
   }
 
+  //----------------------------------------
+  // Logs out user
+  //----------------------------------------
   logout(){
     this.dbx.authTokenRevoke();
     this.authService.logout();

@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { Injectable, isDevMode } from '@angular/core';
 import Utils from './utils'
+const Dropbox = require('dropbox').Dropbox;
 
 @Injectable()
 export class AuthService {
@@ -9,6 +10,18 @@ export class AuthService {
   USER_ID: string;
 
   constructor() { }
+
+  getAuthUrl(){
+    let redirectUrl;
+    if(isDevMode()){
+      redirectUrl = "http://localhost:4200";
+    }
+    else {
+      redirectUrl = "https://cloudbox.netlify.com";
+    }
+
+    return new Dropbox({ clientId: this.CLIENT_ID }).getAuthenticationUrl(redirectUrl);
+  }
 
   // Parses the url and gets the access token if it is in the urls hash
   getAccessTokenFromUrl() {
