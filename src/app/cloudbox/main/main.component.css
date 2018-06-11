@@ -40,6 +40,7 @@ input[type="file"]{
 
 table {
     width: 100%;
+    padding: 1em;
 }
 
 parent-button {

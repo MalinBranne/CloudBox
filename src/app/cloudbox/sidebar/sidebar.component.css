@@ -1,24 +1,43 @@
-#sidebarContainer {
-    max-height: 65vh;
-    padding-left: 10px;
+:host {
+    background: linear-gradient( rgba(0, 0, 0, 0), darkslateblue );
 }
 
-.starred
-{
-    margin-bottom: 5px;
-    max-height: 50%;
-    overflow-y: scroll;
-    
-}
-.search
-{
-
-    max-height: 50%;
-    overflow-y: scroll;
-    
+#starred, #search {
+    display: flex;
+    flex-flow: column;
+    height: 50%;    
 }
 
- .force-overflow
-{
-    min-height: 0px;
-} 
+h6 {
+    flex: 0 1 auto;
+
+    font-weight: 800;
+    padding: 1em 10px 0;
+}
+
+
+#starred-items, #search-items {
+    flex: 1 1 auto;
+      
+    display: flex;
+    flex-flow: column;
+    padding: 10px;
+
+    /* Hack to make scroll work */
+    height: 0px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.item {
+    /* Cut extra long file names */
+    min-height: 25px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.force-overflow {
+    overflow-y: auto;
+}
