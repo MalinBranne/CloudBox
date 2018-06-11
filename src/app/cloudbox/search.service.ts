@@ -20,7 +20,7 @@ export class SearchService {
   }
   subject = new BehaviorSubject(this.searchState);
 
-  constructor(private authService: AuthService, private fileService: FileService) { }
+  constructor(private fileService: FileService) { }
 
   getState(): Observable<SearchState> {
     return this.subject.asObservable();

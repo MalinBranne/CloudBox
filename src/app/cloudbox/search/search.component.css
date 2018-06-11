@@ -1,4 +1,6 @@
 #searchInput {
-
-    border-radius: 10%;
+    font-family: Arial, FontAwesome;
+    border-radius: 1em;
+    padding-left: 7px;
+    outline: none;
 }
