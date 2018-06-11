@@ -15,7 +15,7 @@ export class LogoutComponent implements OnInit {
 
   logout(){
     this.fileService.logout();
-    window.location.href = "http://localhost:4200";
+    window.location.href = `${window.location.host}`;
   }
 
 }
