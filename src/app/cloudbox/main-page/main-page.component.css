@@ -1,22 +1,52 @@
+
+/* Main page container for :
+    - header
+    - #main
+*/
 #container {
     opacity: 0.9;
     background-image: linear-gradient( rgba(0, 0, 0, 0), rgba(63, 57, 226, 0.527) ), url("../../../assets/img/lake1.jpg");
+
     background-size: cover;
-    width: 100%;
-    min-height: 100vh;
-    max-height: 100vh;
+    width: 100%; 
+    height: 100%;
     
- 
-    
+    display: flex;
+    flex-flow: column;
 }
 
+/* Header with:
+    - #logoutBtn
+    - #mid
+*/
 header {
-    height: 35vh;
+    /* height: 35vh; */
     display: grid;
     grid-template-columns: 1fr 3fr 1fr;
     grid-template-rows: 1fr;
 
+    /* Fix height */
+    flex: 0 1 400px;
 }
+
+/* Main area with:
+    - sidebar
+    - main
+    - preview
+*/
+#main{
+    background-color: white;
+    opacity: .8;
+    width: inherit;
+    height: inherit; 
+
+    display: grid;
+    grid-template-columns: 200px 2fr 1fr;
+    grid-template-rows: 1fr;
+
+    flex: 1 1 auto;
+}
+
 
 #mid {
     display: flex;
@@ -45,17 +75,3 @@ header img {
   
     width: 25%;
 }
-
-#main{
-   
-
-    background-color: white;
-    opacity: .8;
-    width: 100%;
-    height: 65vh; 
-
-    display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
-    grid-template-rows: 1fr;
-}
-

@@ -1,34 +1,37 @@
-<!-- File upload -->
-<input 
-  type="file" 
-  id="fileUpload"
-  (change)="handleFileUpload($event.target.files)"   
-/>
-<label for="fileUpload" id="fileUploadButton">Upload</label>
 
-<div *ngIf="!error">
+<!-- File actions -->
+<div id="file-actions">
+
+  <!-- Up to parent folder -->
+  <div 
+    [class.button-disabled]="currentPath === ''" 
+    (click)="backToParentFolder()" 
+    class="button"
+    id="parent-button"
+  >
+    <i class="fa-folder-open fas"></i>
+    Back To Parent Folder
+  </div>
+
+  <!-- File upload -->
+  <input 
+    type="file" 
+    id="file-upload-input"
+    (change)="handleFileUpload($event.target.files)"   
+  />
+  <label 
+    for="file-upload-input" 
+    id="file-upload-button"
+    class="button"
+  >
+    <i class="fa-arrow-up fas"></i>
+    Upload
+  </label>
+</div>
+
 <!-- File view -->
-  <table class="file-list">
-    <thead>
-      <!-- Up to parent folder -->
-      <tr *ngIf="currentPath !== ''" (click)="backToParentFolder()">
-        <th class="file-icon"></th>
-        <th class="file-name">Back To Parent Folder</th>
-        <th></th> 
-        <th></th> 
-        <th></th> 
-        <th></th> 
-      </tr>
-      <!-- Home folder info text -->
-      <tr *ngIf="currentPath === ''">
-        <th></th>
-        <th class="file-name">You're In Your Home Folder.</th>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
-      </tr>
-    </thead>
+<div id="file-list">
+  <table *ngIf="!error">
     <tbody>
       <tr 
         *ngFor="let file of fileList" 
@@ -48,14 +51,20 @@
           ></span>
         </td>
         <td class="file-download">
-          <button *ngIf="file.fileType === FileType.file"  (click)="downloadFile($event)" >Download</button>
+          <div 
+            *ngIf="file.fileType === FileType.file"  
+            (click)="downloadFile($event)" 
+            class="download-button"
+          >
+            <i class="fa-arrow-down fas"></i>
+        </div>
         </td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<div *ngIf="error">
+<div *ngIf="error" id="file-list-error">
   <h3>The requested file could not be found</h3>
   <button (click)="backToHome()">Back to Home Folder</button>
 </div>

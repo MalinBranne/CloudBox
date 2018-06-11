@@ -1,12 +1,27 @@
-<div class="starred">
+<div id="starred">
   <h6>Starred Items</h6>
-  <div [id]="star.id" *ngFor="let star of starredList" (click)="getStarredItem($event)">
-    {{star.name}}
-  </div>
+  <div id="starred-items" class="force-overflow">
+    <div 
+      class="item"
+      [id]="star.id" 
+      *ngFor="let star of starredList" 
+      (click)="getStarredItem($event)"
+    >
+      {{star.name}}
+    </div>
+  </div>  
 </div>
-<div class="search">
+
+<div id="search">
   <h6>Search results</h6>
-  <div *ngFor="let search of currentSearch">
-    <p id="{{search.id}}" (click)="fileAction($event)">{{search.name}}</p>
+  <div id="search-items" class="force-overflow">
+    <div
+      class="item" 
+      [id]="search.id" 
+      *ngFor="let search of currentSearch" 
+      (click)="fileAction($event)"
+    >
+      {{search.name}}
+    </div>
   </div>
 </div>

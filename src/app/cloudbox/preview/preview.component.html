@@ -1,4 +1,8 @@
-<div id="previewDiv">
+<div 
+  id="previewDiv" 
+  [class.center]="preview.type === 'image' || preview.type === 'default' || preview.type === 'unsupported'"
+  [class.default]="preview.type === 'default' || preview.type === 'unsupported'"
+>
 
   <!-- Default, fallback -->
   <div *ngIf="preview.type === 'default' || preview.type === 'unsupported'">
@@ -11,11 +15,15 @@
   </object>
 
   <!-- Images -->
-  <img *ngIf="preview.type === 'image'" [src]="preview.data" />
+  <div *ngIf="preview.type === 'image'" class="scrolling">
+    <img [src]="preview.data" />
+  </div>
 
   <!-- Text -->
-  <pre *ngIf="preview.type === 'text'">
-    {{ preview.data }}
-  </pre>
+  <div *ngIf="preview.type === 'text'" class="scrolling">
+    <pre>
+      {{ preview.data }}
+    </pre>
+  </div>
 
 </div>

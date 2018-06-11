@@ -1,14 +1,51 @@
 
+/* Container for:
+    - #file-actions
+    - #file-list / #file-list-error
+*/
+:host {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+
+    border-left: 1px solid darkslateblue;
+    border-right: 1px solid darkslateblue;
+}
+
+/* File actions */
+
+#file-actions {
+    flex: 0 1 auto;
+    padding: 1em;
+}
+
 input[type="file"]{
     display: none;
+    margin: 0;
+    padding: 0;
 }
 
-#fileUploadButton {
-    border: 1px solid black;
+/* File list */
+
+#file-list, #file-list-error {
+    flex: 1 1 auto;
+    
+    display: flex;
+    flex-flow: column;
+
+    /* Hack to make scroll work */
+    height: 0px;
+    overflow: auto;
 }
 
-thead {
-    background: red;
+table {
+    width: 100%;
+    padding: 1em;
+}
+
+parent-button {
+    background: darkslateblue;
+    color: whitesmoke;  
 }
 
 tbody > tr:hover {
@@ -19,14 +56,75 @@ td {
     padding: 5px;
 }
 
+/* File properties */
+
 .file-name {
     font-weight: 600;
+}
+
+.file-name {
+    width: 100%;
+
+    /* Cut extra long file names */
+    max-width: 0px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.file-modified {
+    min-width: 140px;
+}
+
+.file-size {
+   min-width: 80px;
 }
 
 .file-starred {
     color: gold; 
 }
 
+.download-button {
+    color: green;
+    background: lightgreen;
+    border-radius: 1em;
+    padding: 0 1em;
+    cursor: pointer;
+}
+
 .clickedFile {
-    background: green;
+    background: lightsteelblue;
+}
+
+tbody > tr.clickedFile:hover {
+    background: darkslateblue;
+    color: whitesmoke;
+}
+
+/* Vertical lines */
+.vl {
+    margin: auto 1em;
+    width: 2px; /* Line width */
+    background-color: black; /* Line color */
+    height: 80%; /* Override in-line if you want specific height. */
+    display:inline-block; /* Causes the line to float to left of content. 
+    You can instead use position:absolute or display:inline-block
+    if this fits better with your design */
+}
+
+/* Common button properties */
+.button {
+    background: darkslateblue;
+    color: lightblue;
+    display: inline-block;
+    padding: .5em 1em;
+    cursor: pointer;
+    
+    margin: 0;
+}
+
+.button-disabled {
+    background: gray;
+    color: darkgray;
+    cursor: default;
 }

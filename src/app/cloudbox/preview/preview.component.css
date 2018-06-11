@@ -1,4 +1,40 @@
 #previewDiv {
-    max-width: 20vw;
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
+/* .default {
+    background: lightsteelblue;
+} */
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.scrolling {
+    position: absolute;
+    top: 0; bottom: 0; left: 0%; right: 0;
+    overflow: auto;
+}
+
+pre {
+    white-space: pre-wrap;
+}
+
+img {
+    width: 100%;
+    
+    /* Hack to center image */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+embed {
+    height: 100%;
+    width: 100%;
+}
