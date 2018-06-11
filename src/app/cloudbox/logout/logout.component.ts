@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { FileService } from '../file.service';
 
 @Component({
   selector: 'logout',
@@ -8,13 +8,13 @@ import { AuthService } from '../auth.service';
 })
 export class LogoutComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  constructor(private fileService: FileService) { }
 
   ngOnInit() {
   }
 
   logout(){
-    this.authService.logout();
+    this.fileService.logout();
     window.location.href = "http://localhost:4200";
   }
 
