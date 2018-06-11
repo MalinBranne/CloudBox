@@ -36,7 +36,7 @@ export class SearchService {
       "path": "", //searching root folder
       "query": query,
       "start": 0,
-      "max_results": 10,
+      "max_results": 100,
       "mode": "filename"
     })
       .then(response => {
