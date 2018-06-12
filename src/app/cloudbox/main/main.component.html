@@ -30,8 +30,8 @@
 </div>
 
 <!-- File view -->
-<div id="file-list">
-  <table *ngIf="!error">
+<div id="file-list" *ngIf="!error">
+  <table>
     <tbody>
       <tr 
         *ngFor="let file of fileList" 

@@ -6,7 +6,8 @@
 #starred, #search {
     display: flex;
     flex-flow: column;
-    height: 50%;    
+    height: 50%;
+    padding: 1em 10px 10px;
 }
 
 h6 {
@@ -15,16 +16,14 @@ h6 {
     color: white;
     font-style: bold;
     text-shadow: 1px 1px grey;
-    padding: 1em 10px 0;
 }
 
 
-#starred-items, #search-items {
+.force-overflow {
     flex: 1 1 auto;
       
     display: flex;
     flex-flow: column;
-    padding: 10px;
     cursor: pointer;
 
     /* Hack to make scroll work */
@@ -33,6 +32,33 @@ h6 {
     overflow-x: hidden;
 }
 
+/* ---------------------------------------------------- */
+/* SCROLLBAR */
+/* ---------------------------------------------------- */
+.force-overflow::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+.force-overflow::-webkit-scrollbar-track {
+    background: lightblue; 
+    border-radius: 10px;
+}
+ 
+/* Handle */
+.force-overflow::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: rgba(72, 61, 139, 0.8); 
+}
+.force-overflow::-webkit-scrollbar-thumb:hover {
+    border-radius: 10px;
+    background: rgba(72, 61, 139, 1.0); 
+}
+.force-overflow::-webkit-scrollbar-thumb:window-inactive {
+	background: rgba(72, 61, 139,0.4); 
+}
+/* ---------------------------------------------------- */
+
 .item {
     /* Cut extra long file names */
     min-height: 25px;
@@ -40,8 +66,4 @@ h6 {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-}
-
-.force-overflow {
-    overflow-y: auto;
 }
