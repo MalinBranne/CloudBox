@@ -14,7 +14,6 @@ h6 {
 
     color: white;
     font-style: bold;
-    cursor: pointer;
     text-shadow: 1px 1px grey;
     padding: 1em 10px 0;
 }
@@ -26,6 +25,7 @@ h6 {
     display: flex;
     flex-flow: column;
     padding: 10px;
+    cursor: pointer;
 
     /* Hack to make scroll work */
     height: 0px;

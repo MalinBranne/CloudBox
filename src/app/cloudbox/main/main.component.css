@@ -58,12 +58,14 @@ td {
 
 /* File properties */
 
-.file-name {
-    font-weight: 600;
+.file-icon {
+    cursor: pointer;
 }
 
 .file-name {
     width: 100%;
+    font-weight: 600;
+    cursor: pointer;
 
     /* Cut extra long file names */
     max-width: 0px;
@@ -74,14 +76,17 @@ td {
 
 .file-modified {
     min-width: 140px;
+    cursor: pointer;
 }
 
 .file-size {
    min-width: 80px;
+   cursor: pointer;
 }
 
-.file-starred {
+.file-starred > .fa-star {
     color: gold; 
+    cursor: pointer;
 }
 
 .download-button {
