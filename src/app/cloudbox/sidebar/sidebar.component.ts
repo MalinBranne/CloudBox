@@ -58,6 +58,13 @@ export class SidebarComponent implements OnInit {
     }
   }
 
+  toggleStar(event){
+    let fileId = this.fileService.getFileIdByParentFromEvent(event);
+    let file = this.starredList.find(file => file.id === fileId);
+
+    this.fileService.toggleStar(file)
+  }
+
   setQuery(query) {
     this.queryStream.next(query);
   }

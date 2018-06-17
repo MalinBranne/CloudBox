@@ -67,3 +67,8 @@ h6 {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+#starred-items .fa-star {
+    color: gold; 
+    cursor: pointer;
+}

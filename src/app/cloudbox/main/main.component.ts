@@ -36,9 +36,9 @@ export class MainComponent implements OnInit {
   }
 
   fileAction(event) {
-    let fileId = this.getFileIdByParentFromEvent(event);
+    let fileId = this.fileService.getFileIdByParentFromEvent(event);
+    let file = this.fileList.find(file => file.id === fileId);
 
-    let file = this.fileService.getFileFromId(fileId);
     if (file.fileType === FileType.folder) {
       this.fileService.fetchFiles(file.path);
     }
@@ -49,15 +49,17 @@ export class MainComponent implements OnInit {
   }
 
   toggleStar(event) {
-    let fileId = this.getFileIdByParentFromEvent(event);
+    let fileId = this.fileService.getFileIdByParentFromEvent(event);
+    let file = this.fileList.find(file => file.id === fileId);
 
-    this.fileService.toggleStar(fileId);
+    this.fileService.toggleStar(file);
   }
 
   downloadFile(event) {
-    let fileId = this.getFileIdByParentFromEvent(event);
+    let fileId = this.fileService.getFileIdByParentFromEvent(event);
+    let file = this.fileList.find(file => file.id === fileId);
     
-    this.fileService.downloadFileFromId(fileId);
+    this.fileService.downloadFile(file);
   }
 
   handleFileUpload(files: FileList) {
@@ -72,37 +74,6 @@ export class MainComponent implements OnInit {
 
   backToHome() {
     this.fileService.fetchFiles();
-  }
-
-  getFileIdByParentFromEvent(event){
-    console.log(event);
-
-    let fileId;
-
-    // Chrome, Opera
-    if(event.path){ 
-      fileId = event.path.find(tag => tag.id.startsWith("id:")).id;
-    }
-
-    // Edge
-    else if(event.srcElement){
-      let tag = event.srcElement.parentNode;
-      while(!tag.id.startsWith("id:")){
-        tag = tag.parentNode;
-      }
-      fileId = tag.id;
-    }
-
-    // Firefox
-    else if(event.target){
-      let tag = event.target.parentNode;
-      while(!tag.id.startsWith("id:")){
-        tag = tag.parentNode;
-      }
-      fileId = tag.id;
-    }
-
-    return fileId;
   }
 
 }

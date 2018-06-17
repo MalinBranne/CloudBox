@@ -7,6 +7,10 @@
       *ngFor="let star of starredList" 
       (click)="getStarredItem($event)"
     >
+      <span 
+        class="fa-star fas"
+        (click)="toggleStar($event)"
+      ></span>
       {{star.name}}
     </div>
   </div>  

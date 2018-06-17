@@ -506,17 +506,11 @@ export class FileService {
   }
 
   //----------------------------------------
-  // Downloads file from Dropbox, based on ID
+  // Downloads file from Dropbox
   //----------------------------------------
-  downloadFileFromId(id: string) {
-    let currentFile = this.getFileFromId(id);
-    this.downloadFile(currentFile["path"]);
-  }
+  downloadFile(file: IFile) {
+    let path = file.path;
 
-  //----------------------------------------
-  // Downloads file from Dropbox, based on path
-  //----------------------------------------
-  downloadFile(path: string) {
     this.dbx.filesGetTemporaryLink({ path })
       .then(response => response.link)
       .then(link => {
@@ -532,12 +526,35 @@ export class FileService {
   }
 
   //----------------------------------------
-  // Get file from ID. Must be a file that is in cache.
+  // Get file ID from parent HTML element in event
   //----------------------------------------
-  getFileFromId(id) {
-    let currentFile = this.fileState.paths[this.fileState.currentPath]
-      .find(file => file.id === id);
-    return currentFile;
+  getFileIdByParentFromEvent(event){
+    let fileId;
+
+    // Chrome, Opera
+    if(event.path){ 
+      fileId = event.path.find(tag => tag.id.startsWith("id:")).id;
+    }
+
+    // Edge
+    else if(event.srcElement){
+      let tag = event.srcElement.parentNode;
+      while(!tag.id.startsWith("id:")){
+        tag = tag.parentNode;
+      }
+      fileId = tag.id;
+    }
+
+    // Firefox
+    else if(event.target){
+      let tag = event.target.parentNode;
+      while(!tag.id.startsWith("id:")){
+        tag = tag.parentNode;
+      }
+      fileId = tag.id;
+    }
+
+    return fileId;
   }
 
   //----------------------------------------
@@ -549,10 +566,9 @@ export class FileService {
   }
 
   //----------------------------------------
-  // Toggle starring of a file. Must be in cache.
+  // Toggle starring of a file
   //----------------------------------------
-  toggleStar(fileId) {
-    let currentFile = this.getFileFromId(fileId);
+  toggleStar(currentFile: IFile) {
     currentFile.starred = !currentFile.starred;
 
     // If it was starred, push to array
@@ -561,7 +577,7 @@ export class FileService {
     }
     // Else remove it from array
     else {
-      let index = this.starredFiles.findIndex(file => file.id === fileId);
+      let index = this.starredFiles.findIndex(file => file.id === currentFile.id);
       this.starredFiles.splice(index, 1); // tar bort starredFiles första state som är en tom lista
     }
 
