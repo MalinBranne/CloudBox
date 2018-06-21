@@ -50,6 +50,9 @@
             (click)="toggleStar($event)"
           ></span>
         </td>
+        <td class="file-delete">
+          <i class="fas fa-trash-alt" (click)="notifyDeleteFile($event)"></i>
+        </td>
         <td class="file-download">
           <div 
             *ngIf="file.fileType === FileType.file"  
@@ -67,4 +70,18 @@
 <div *ngIf="error" id="file-list-error">
   <h3>The requested file could not be found</h3>
   <button (click)="backToHome()">Back to Home Folder</button>
+</div>
+
+<div class="modal" id="delete-modal" *ngIf="deletingFile">
+  <div class="modal-content">
+    <div class="modal-info">
+      You're about to delete the {{getFileTypeAsString(deletingFile)}} 
+      <strong>{{deletingFile.name}}</strong><span *ngIf="deletingFile.fileType === FileType.folder"> and its content</span>. 
+      Are you really sure you want this?
+    </div>
+    <div class="modal-buttons">
+      <span (click)="deleteFile()" id="delete-button">Delete</span>
+      <span (click)="cancelDeleteFile()" class="cancel-button">Cancel</span>
+    </div>
+  </div>
 </div>

@@ -3,6 +3,14 @@ export enum FileType {
     file, folder
 }
 
+export enum Error {
+    deleteFailed,
+    disconneted,
+    fetchFailed,
+    fileAlreadyExists,
+    uploadFailed
+}
+
 export interface IFile {
     id: number;
     fileType: FileType;

@@ -118,7 +118,12 @@ td {
     cursor: pointer;
 }
 
-.download-button {
+.file-delete > .fa-trash-alt {
+    color: darkslateblue;
+    cursor: pointer;
+}
+
+.file-download > .download-button {
     color: green;
     background: lightgreen;
     border-radius: 1em;
@@ -133,6 +138,10 @@ td {
 tbody > tr.clickedFile:hover {
     background: darkslateblue;
     color: whitesmoke;
+}
+
+tbody > tr.clickedFile:hover > td.file-delete > .fa-trash-alt {
+    color: lightblue;
 }
 
 /* Vertical lines */
@@ -161,4 +170,54 @@ tbody > tr.clickedFile:hover {
     background: gray;
     color: darkgray;
     cursor: default;
+}
+
+.modal {
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    display: block; /* Overrides bootstrap */
+}
+
+.modal-content {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: #fefefe;
+    border: 1px solid #888;
+    width: 300px;
+    display: block; /* Overrides bootstrap */
+}
+
+.modal-info{
+    margin: 20px;
+}
+
+.modal-buttons {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.modal-buttons > * {
+    width: 50%;
+    display: inline-block;
+    text-align: center;
+    padding: 1em;
+}
+
+#delete-button{
+    background: lightcoral;
+    border-bottom-left-radius: .3em;
+}
+
+.cancel-button{
+    background: lightgray;
+    border-bottom-right-radius: .3em;
 }

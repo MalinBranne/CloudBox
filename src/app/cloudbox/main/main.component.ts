@@ -10,11 +10,15 @@ import { SearchService } from '../search.service';
 })
 export class MainComponent implements OnInit {
 
+  // Subscriptions 
   subscription;
   fileList: IFile[];
   currentPath: string;
   error;
   selectedFile: string;
+
+  // Locals
+  deletingFile: IFile;
 
   // Is needed so that FileType enum is recognized
   FileType = FileType;
@@ -55,10 +59,25 @@ export class MainComponent implements OnInit {
     this.fileService.toggleStar(file);
   }
 
+  notifyDeleteFile(event){
+    let fileId = this.fileService.getFileIdByParentFromEvent(event);
+    this.deletingFile = this.fileList.find(file => file.id === fileId);
+    console.log(this.deletingFile);
+  }
+
+  cancelDeleteFile(){
+    this.deletingFile = null;
+  }
+
+  deleteFile() {
+    this.fileService.deleteFile(this.deletingFile);
+    this.deletingFile = null;
+  }
+
   downloadFile(event) {
     let fileId = this.fileService.getFileIdByParentFromEvent(event);
     let file = this.fileList.find(file => file.id === fileId);
-    
+
     this.fileService.downloadFile(file);
   }
 
@@ -74,6 +93,13 @@ export class MainComponent implements OnInit {
 
   backToHome() {
     this.fileService.fetchFiles();
+  }
+
+  getFileTypeAsString(file: IFile){
+    if(file.fileType == FileType.file)
+      return "file";
+    else
+      return "folder";
   }
 
 }

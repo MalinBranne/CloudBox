@@ -434,7 +434,6 @@ export class FileService {
   // Uploads file to dropbox
   //----------------------------------------
   uploadFile(file: File) {
-    console.log(file);
 
     const reader = new FileReader();
     reader.onload = () => {
@@ -473,9 +472,8 @@ export class FileService {
             this.fileState.paths[folderPath].push(newFile);
             this.updateSubscribers();
           }
-          // Else, notify subscribers 
           else {
-            // TODO
+            // TODO: notify subscribers of error
           }
 
         })
@@ -485,6 +483,29 @@ export class FileService {
         });
     };
     reader.readAsArrayBuffer(file);
+  }
+
+  //----------------------------------------
+  // Deletes file from dropbox
+  //----------------------------------------
+  deleteFile(delFile: IFile){
+    let path = delFile.path;
+    let folderPath = this.getFolderPath(path);
+
+    // Remove entry locally
+    this.fileState.paths[folderPath] = this.fileState.paths[folderPath]
+      .filter(file => file.name !== delFile.name);
+    this.updateSubscribers();
+
+    // Remove on Dropbox
+    this.dbx.filesDeleteV2({ path })
+      .then(file => console.log(file))
+      .catch(error => {
+        // If there was an error, undo deletion.
+        this.fileState.paths[folderPath].push(delFile);
+        this.updateSubscribers();
+        // TODO: notify subscribers of error
+      });
   }
 
   //----------------------------------------
